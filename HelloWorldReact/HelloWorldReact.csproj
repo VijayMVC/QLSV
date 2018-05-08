@@ -124,6 +124,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controllers\CTDaoTaoController.cs" />
     <Compile Include="Controllers\MenuController.cs" />
     <Compile Include="Models\DATAINFOBASE.cs" />
     <Compile Include="Models\Menu\MENU_BUS.cs" />
@@ -1777,6 +1778,7 @@
     <Content Include="Content\plugins\iCheck\square\yellow.css" />
     <Content Include="Content\plugins\iCheck\square\yellow.png" />
     <Content Include="Content\plugins\iCheck\square\_all.css" />
+    <Content Include="Database\script.sql" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="fonts\glyphicons-halflings-regular.woff" />
@@ -2314,6 +2316,7 @@
     <Content Include="Content\bower_components\jquery\src\.eslintrc.json" />
     <Content Include="Content\dist\css\adminlte.css.map" />
     <Content Include="Content\dist\css\adminlte.min.css.map" />
+    <Content Include="Database\MTA.QLSV.bak" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="plugins\bootstrap-colorpicker\dist\css\bootstrap-colorpicker.css" />
     <Content Include="plugins\bootstrap-colorpicker\dist\css\bootstrap-colorpicker.min.css" />
@@ -8711,6 +8714,7 @@
     <Content Include="Scripts\jquery.validate.min.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
+    <Content Include="Scripts\jsx\ctdaotao\index.jsx" />
     <Content Include="Scripts\jsx\menu\index.jsx" />
     <Content Include="Scripts\jsx\Nation.jsx" />
     <None Include="Scripts\jsx\HelloWorld.jsx" />
@@ -8723,6 +8727,7 @@
     <Content Include="Scripts\react\react-with-addons-0.12.2.js" />
     <Content Include="Scripts\react\react-with-addons-0.12.2.min.js" />
     <Content Include="Scripts\jsx\nationreact.jsx" />
+    <Content Include="Views\CTDaoTao\Index.cshtml" />
     <None Include="Views\Home\nationreact.cshtml" />
     <None Include="Views\Home\login.cshtml" />
     <Content Include="Web.config" />
