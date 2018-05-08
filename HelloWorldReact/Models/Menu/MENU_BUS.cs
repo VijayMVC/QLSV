@@ -60,7 +60,7 @@ namespace HelloWorldReact.Models.Menu
             {
                 sql += " WHERE " + swhere;
             }
-            sql+= " ORDER BY SORT";
+            sql += " ORDER BY SORT";
             cm.CommandText = sql;
             cm.CommandType = CommandType.Text;
             DataSet ds = new DataSet();
@@ -145,7 +145,7 @@ namespace HelloWorldReact.Models.Menu
         public MENU_OBJ GetMenuByCode(string code)
         {
             MENU_OBJ lidata = new MENU_OBJ();
-            string sql = "SELECT * FROM AU_MENU WHERE MENUID = '"+code+"'";
+            string sql = "SELECT * FROM AU_MENU WHERE MENUID = '" + code + "'";
             SqlCommand cm = new SqlCommand();
             cm.CommandText = sql;
             cm.CommandType = CommandType.Text;
@@ -159,7 +159,7 @@ namespace HelloWorldReact.Models.Menu
             {
                 List<MENU_OBJ> temp = new List<MENU_OBJ>();
                 temp = FillToOBJ(ds);
-                if(temp.Count != 0)
+                if (temp.Count != 0)
                 {
                     lidata = temp[0];
                 }
@@ -167,7 +167,7 @@ namespace HelloWorldReact.Models.Menu
                 {
                     lidata = null;
                 }
-             }
+            }
             return lidata;
         }
 
@@ -193,41 +193,36 @@ namespace HelloWorldReact.Models.Menu
         {
             int ret = 0;
             string sql = @"UPDATE AU_MENU SET 
-                    MENUID=@menuid
-                    , MENUIDCHA=@menuidcha
+                    MENUIDCHA=@menuidcha
                     , TITLE=@title
                     , URL=@url
                     ,SORT=@sort
                     ,TRANGTHAI=@trangthai
                     , I_CREATE_DATE=@create_Date
                     ,I_UPDATE_DATE = @update_Date
-                    WHERE ID=@
-
-                ";
+                    WHERE MENUID = @menuid";
             SqlCommand com = new SqlCommand();
             com.CommandText = sql;
             com.CommandType = CommandType.Text;
-            com.Parameters.Add("@id", SqlDbType.VarChar).Value = obj.CODE;
-            com.Parameters.Add("@menuid", SqlDbType.VarChar).Value = obj.MenuId;
-            com.Parameters.Add("@menuidcha", SqlDbType.VarChar).Value = obj.MenuIdCha;
-            com.Parameters.Add("@title", SqlDbType.NVarChar).Value = obj.Title;
-            com.Parameters.Add("@url", SqlDbType.NVarChar).Value = obj.Url;
+            com.Parameters.Add("@menuid", SqlDbType.VarChar).Value = obj.MenuId ?? (object)DBNull.Value;
+            com.Parameters.Add("@menuidcha", SqlDbType.VarChar).Value = obj.MenuIdCha ?? (object)DBNull.Value;
+            com.Parameters.Add("@title", SqlDbType.NVarChar).Value = obj.Title ?? (object)DBNull.Value;
+            com.Parameters.Add("@url", SqlDbType.NVarChar).Value = obj.Url ?? (object)DBNull.Value;
             com.Parameters.Add("@trangthai", SqlDbType.Int).Value = obj.TrangThai;
             com.Parameters.Add("@sort", SqlDbType.Int).Value = obj.Sort;
-            com.Parameters.Add("@create_Date", SqlDbType.DateTime).Value = obj.ICREATEDATE;
-            com.Parameters.Add("@update_Date", SqlDbType.DateTime).Value = obj.IUPDATEBY;
+            com.Parameters.Add("@create_Date", SqlDbType.DateTime).Value = obj.ICREATEDATE ?? (object)DBNull.Value;
+            com.Parameters.Add("@update_Date", SqlDbType.DateTime).Value = obj.IUPDATEDTAE ?? (object)DBNull.Value;
             ret = db.doCommand(ref com);
             return ret;
         }
         public int Delete(MENU_OBJ obj)
         {
             int ret = 0;
-            string sql = @"DELETE FROM AU_MENU  WHERE code=@code_key
-                ";
+            string sql = @"DELETE FROM AU_MENU  WHERE MENUID=@code_key";
             SqlCommand com = new SqlCommand();
             com.CommandText = sql;
             com.CommandType = CommandType.Text;
-            com.Parameters.Add("@code_key", SqlDbType.VarChar).Value = obj.CODE;
+            com.Parameters.Add("@code_key", SqlDbType.VarChar).Value = obj.MenuId;
             ret = db.doCommand(ref com);
             return ret;
         }

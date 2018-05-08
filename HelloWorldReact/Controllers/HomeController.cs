@@ -50,6 +50,12 @@ namespace HelloWorldReact.Controllers
             }
             return RedirectToAction("Login", "Home");
         }
+
+        public ActionResult Logout()
+        {
+            ses.logout();
+            return RedirectToAction("Login", "Home");
+        }
         public ActionResult Nation()
         {
             NATION_BUS bus = new NATION_BUS();

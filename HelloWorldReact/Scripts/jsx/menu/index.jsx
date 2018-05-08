@@ -81,6 +81,10 @@ var App = React.createClass({
         //    this.loadparent();
         this.loadData();
     },
+    handleEditRowSubmit: function () { //Them moi 1 ban ghi load lai du lieu
+        //    this.loadparent();
+        this.loadData();
+    },
     setEdit: function (title, obj) {
         this.setParent();
         obj = obj || '';//omitted - missed
@@ -109,7 +113,7 @@ var App = React.createClass({
         $("#TRANGTHAI").value('');
         $("#SORT").val('');
     },
-    
+
     setCreate: function () {
         this.setParent();
         $("#CreateModal").modal("show");
@@ -123,12 +127,12 @@ var App = React.createClass({
                 <div id="listData">
                     <div style={{ 'margin-bottom': '10px' }}>
                         <div className="col-lg-12 col-md-12" style={{ 'margin-bottom': '10px' }}>
-                            <button className="btn btn-sm  btn-primary" id="btnAdd" onClick={() => this.setCreate()} style={{ 'float': 'left' , 'margin-right':'20px'}}>
+                            <button className="btn btn-sm  btn-primary" id="btnAdd" onClick={() => this.setCreate()} style={{ 'float': 'left', 'margin-right': '20px' }}>
                                 Thêm mới
                                 </button>
                             &nbsp;
                              <input type="text" className="form-control" id="keysearch" style={{ 'max-width': '300px', 'float': 'left', 'margin-right': '20px' }} />
-                             <input type="button" className="btn btn-sm btn-default" onClick={this.search} style={{ 'float': 'left' }} value="Tìm kiếm" />
+                            <input type="button" className="btn btn-sm btn-default" onClick={this.search} style={{ 'float': 'left' }} value="Tìm kiếm" />
                         </div>
                     </div>
                     <ListRow clist={this.state.data} startindex={this.state.startindex} loadData={this.loadData} setEdit={this.setEdit} />
@@ -156,9 +160,8 @@ var ListRow = React.createClass({
             dataType: 'json',
             success: function (data) {
                 if (data.sussess >= 0) {
+                    alert('Xóa thành công !');
                     this.loadData(); //xoa xong load lai du lieu
-                    //$("#NotificationModal h5").empty().append('Xóa thành công!');
-                    //$("#NotificationModal").modal('show');
                 } else {
                     //try to waiting
                     $("#NotificationModal h5").empty().append('Không xóa được bản ghi!');
@@ -179,7 +182,7 @@ var ListRow = React.createClass({
         var that = this;
         var index = 0;
         //Gọi yêu cầu hiển thi tất cả các department trong danh sách
-        if (this.props.clist){
+        if (this.props.clist) {
             this.props.clist.forEach(function (rowitem) {
                 //child function so that, this does mean thi window not the react object
                 index++;
@@ -231,7 +234,7 @@ var ListRow = React.createClass({
 
 var RowDetail = React.createClass({
     handleRemove: function () {
-        $("#idRemove").val(this.props.item.Id);
+        $("#idRemove").val(this.props.item.MenuId);
         $("#ConfirmModal").modal('show');
         return false;
     },
@@ -275,7 +278,7 @@ var EditRow = React.createClass({
     handleSubmit: function () {
         //Lay gia tri tu cac thanh phan giao dien
 
-        var TITLE = this.refs.NAME.getDOMNode().value;
+        var TITLE = this.refs.TITLE.getDOMNode().value;
 
         var MENUID = this.refs.MENUID.getDOMNode().value;
 
@@ -297,29 +300,23 @@ var EditRow = React.createClass({
             thetype: $.trim($('#thetype').val()),
             keysearch: $.trim($('#keysearch').val()),
         }
-        if (CODEVIEW == "") {
-            alert("Chưa nhập mã");
-            $("#UpdateModal").modal("show");
-            return false;
-        } else {
-            //Add or edit 1 department
-            $.ajax({
-                url: "/nation/update",
-                type: 'POST',
-                data: data,
-                dataType: 'json',
-                success: function (data) {
-                    if (data.sussess >= 0) {
-                        this.props.onRowSubmit(); //load lai du lieu
-                    }
-                }.bind(this),
-                error: function (xhr, status, err) {
-                    console.error(this.props.url, status, err.toString());
-                }.bind(this)
-            });
-
-            return false;
-        }
+        $.ajax({
+            url: "/menu/update",
+            type: 'POST',
+            data: data,
+            dataType: 'json',
+            success: function (data) {
+                if (data.sussess >= 0) {
+                    alert('Sửa đổi thành công !');
+                    this.props.onRowSubmit(); //load lai du lieu
+                    $('#UpdateModal').modal("hide");
+                }
+            }.bind(this),
+            error: function (xhr, status, err) {
+                console.error(this.props.url, status, err.toString());
+            }.bind(this)
+        });
+        return false;
     },
 
     render: function () {
@@ -348,7 +345,7 @@ var EditRow = React.createClass({
                                     <div className="form-group col-md-12">
                                         <label className="col-md-1 control-label">Mã</label>
                                         <div className="col-md-4">
-                                            <input type="text" className="form-control" ref="MENUID" id="MENUID" />
+                                            <input type="text" className="form-control" ref="MENUID" id="MENUID" disable />
                                         </div>
                                         <label className="col-md-3 control-label">Tên menu</label>
                                         <div className="col-md-4">
@@ -376,7 +373,7 @@ var EditRow = React.createClass({
                                         <label className="col-md-3 control-label">Trạng thái</label>
                                         <div className="col-md-4">
                                             <select className="form-control" ref="TRANGTHAI" id="TRANGTHAI">
-                                                <option value="1">Sử dụng</option>
+                                                <option value="10">Sử dụng</option>
                                                 <option value="0">Không sử dụng</option>
                                             </select>
                                         </div>
@@ -412,7 +409,7 @@ var NewRow = React.createClass({
         //Lay gia tri tu cac thanh phan giao dien
 
         var TITLE = this.refs.CNAME.getDOMNode().value;
-        
+
         var MENUID = this.refs.CMENUID.getDOMNode().value;
 
         var MENUIDCHA = this.refs.CMENUIDCHA.getDOMNode().value;
@@ -461,13 +458,13 @@ var NewRow = React.createClass({
     },
 
     render: function () {
-        var listSelect=[];
+        var listSelect = [];
         var index = 0;
         if (this.props.menuParent) {
             this.props.menuParent.forEach(function (rowitem) {
                 //child function so that, this does mean thi window not the react object
                 index++;
-                listSelect.push(<SelectDetail item={rowitem} index={index}/>);
+                listSelect.push(<SelectDetail item={rowitem} index={index} />);
             });
         }
         var inputStyle = { padding: '10px' };
@@ -514,7 +511,7 @@ var NewRow = React.createClass({
                                         <label className="col-md-3 control-label">Trạng thái</label>
                                         <div className="col-md-4">
                                             <select className="form-control" ref="CTRANGTHAI" id="CTRANGTHAI">
-                                                <option value="1">Sử dụng</option>
+                                                <option value="10">Sử dụng</option>
                                                 <option value="0">Không sử dụng</option>
                                             </select>
                                         </div>

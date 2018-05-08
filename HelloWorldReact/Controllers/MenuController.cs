@@ -22,7 +22,7 @@ namespace HelloWorldReact.Controllers
         }
 
         // GET: Menu
-        public JsonResult getlist(string keysearch , int? page , int? pageCur)
+        public JsonResult getlist(string keysearch, int? page, int? pageCur)
         {
             List<MENU_OBJ> li = null;
             int pageSize = page ?? 10;
@@ -43,11 +43,11 @@ namespace HelloWorldReact.Controllers
             //Chỉ số đầu tiên của trang hiện tại (đã trừ -1)
             //Trả về client
             return Json(new
-                {
-                    data = li,//Danh sách
-                    total = countpage,//số lượng trang
-                    ret = 0//ok
-                }, JsonRequestBehavior.AllowGet);
+            {
+                data = li,//Danh sách
+                total = countpage,//số lượng trang
+                ret = 0//ok
+            }, JsonRequestBehavior.AllowGet);
 
         }
 
@@ -77,7 +77,7 @@ namespace HelloWorldReact.Controllers
             MENU_BUS bus = new MENU_BUS();
             int ret = 0;
             var data = bus.GetMenuByCode(obj.MenuId);
-            if(data == null)
+            if (data == null)
             {
                 ret = 0;
                 obj.CODE = Guid.NewGuid().ToString();
@@ -105,8 +105,8 @@ namespace HelloWorldReact.Controllers
             if (data != null)
             {
                 ret = 0;
-                obj.CODE = Guid.NewGuid().ToString();
-                ret = bus.Insert(obj);
+                obj.IUPDATEDTAE = DateTime.Now;
+                ret = bus.Update(obj);
             }
             else
             {
@@ -119,11 +119,6 @@ namespace HelloWorldReact.Controllers
         }
         public JsonResult delete(string id)
         {
-            if (ses.func("ADMINDIRE") <= 0)
-            {
-                return Json(new { sussess = -3 }, JsonRequestBehavior.AllowGet);
-
-            }
             int ret = 0;
             MENU_BUS bus = new MENU_BUS();
 
@@ -134,7 +129,6 @@ namespace HelloWorldReact.Controllers
             }
             if (ret >= 0)
             {
-                obj.CODE = obj.CODE;
                 ret = bus.Delete(obj);
             }
             bus.CloseConnection();
