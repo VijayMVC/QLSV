@@ -124,6 +124,7 @@ var App = React.createClass({
             <div>
                 <NewRow menuParent={this.state.menuParent} onRowSubmit={this.handleNewRowSubmit} />
                 <EditRow menuParentEdit={this.state.menuParent} onRowSubmit={this.handleEditRowSubmit} />
+                <h2>Xem chương trình đào tạo</h2>
                 <div id="listData">
                     <div style={{ 'margin-bottom': '10px' }}>
                         <div className="col-lg-12 col-md-12" style={{ 'margin-bottom': '10px' }}>

@@ -178,7 +178,7 @@ namespace HelloWorldReact.Models.Menu
             SqlCommand com = new SqlCommand();
             com.CommandText = sql;
             com.CommandType = CommandType.Text;
-            com.Parameters.Add("@id", SqlDbType.VarChar).Value = obj.CODE;
+            com.Parameters.Add("@id", SqlDbType.VarChar).Value = obj.ID;
             com.Parameters.Add("@menuid", SqlDbType.VarChar).Value = obj.MenuId;
             com.Parameters.Add("@menuidcha", SqlDbType.VarChar).Value = obj.MenuIdCha;
             com.Parameters.Add("@title", SqlDbType.NVarChar).Value = obj.Title;

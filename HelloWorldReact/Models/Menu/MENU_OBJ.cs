@@ -6,7 +6,7 @@ using System.Web;
 
 namespace HelloWorldReact.Models.Menu
 {
-    public class MENU_OBJ : DATAINFOBASE
+    public class MENU_OBJ : DBINFOMENU
     {
         [Display(Name = "Mã cha")]
         [StringLength(100)]

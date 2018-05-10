@@ -80,7 +80,7 @@ namespace HelloWorldReact.Controllers
             if (data == null)
             {
                 ret = 0;
-                obj.CODE = Guid.NewGuid().ToString();
+                obj.ID = Guid.NewGuid().ToString();
                 ret = bus.Insert(obj);
             }
             else
