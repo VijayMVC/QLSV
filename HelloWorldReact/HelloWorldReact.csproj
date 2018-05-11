@@ -125,6 +125,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Controllers\CTDaoTaoController.cs" />
+    <Compile Include="Controllers\DEPARTMENTController.cs" />
+    <Compile Include="Controllers\LVEDUCATIONController.cs" />
     <Compile Include="Controllers\MenuController.cs" />
     <Compile Include="Models\DATAINFOBASE.cs" />
     <Compile Include="Models\DBINFOMENU.cs" />
@@ -8775,6 +8777,8 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Views\DEPARTMENT\" />
+    <Folder Include="Views\LVEDUCATION\" />
   </ItemGroup>
   <ItemGroup>
     <TypeScriptCompile Include="plugins\moment\moment.d.ts" />

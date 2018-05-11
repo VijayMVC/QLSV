@@ -5,7 +5,6 @@ var App = React.createClass({
         return { data: [], firsttime: 1 };
     },
     componentWillMount: function () {
-
         //this.loadData();
         //console.log("bắt đầu");
     },
