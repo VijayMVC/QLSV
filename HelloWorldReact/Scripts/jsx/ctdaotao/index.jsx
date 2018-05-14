@@ -44,10 +44,42 @@ var App = React.createClass({
             }
             )
     },
+    getSpeciality: function () {
+        var departmentCode = $("#department").val();
+        console.log(departmentCode);
+        $.ajax({
+            url: '/SPECIALITY/getListByDepartmentCode',
+            dataType: 'json',
+            data: {
+                departmentCode: departmentCode
+            },
+            success: function (data) {
+                if (data.ret >= 0) {
+                    this.setState({
+                        isLoaded: true,
+                        Speciality: data.data,
+                    });
+                }
+                else {
+                    alert("Lỗi không lấy được dữ liệu");
+                }
+                //AppRendered.loadData();
+                //pagination(data.total, function () {
+                //    AppRendered.loadData();
+                //});
+            }.bind(this),
+            error: function (xhr, status, err) {
+                this.setState({
+                    isLoaded: true,
+                    error
+                });
+            }.bind(this)
+        });
+    },
     //phuong thuc quan trong nhat-->render html la ngoai
     render: function () {
         this.getLvEducation();
-        const { error, isLoaded, lvE, Department } = this.state;
+        const { error, isLoaded, lvE, Department, Speciality} = this.state;
         if (error) {
             return <div>Error: {error.message}</div>;
         } else if (!isLoaded) {
@@ -66,7 +98,7 @@ var App = React.createClass({
                             </div>
                             <div className="col-md-5">
                                 <label style={{ 'font-size': '20px' }}>Ngành học : </label>
-                                <SelectDepartment loadData={this.getDepartment} data={this.state.Department} />
+                                <SelectDepartment loadData={this.getDepartment} data={this.state.Department} onChangeSelect={this.getSpeciality} />
                             </div>
                         </div>
                         <div className="row" style={{ 'margin-top': '30px' }}>
@@ -81,11 +113,13 @@ var App = React.createClass({
                            <hr/>
                         </div>
                         <div className="row" style={{ 'margin-top': '30px' }}>
-                            <div className="col-md-4">
+                            <div className="col-md-1">
                             </div>
-                            <div className="col-md-4">
-                                <span style={{ 'font-size': '20px' }}>Xem chương trình đào tạo theo </span>
-                                <span className="fa fa-cubes"></span>
+                            <div className="col-md-5">
+                                <span>Xem theo chuyên ngành : </span>
+                                <SelectSpeciality loadData={this.getSpeciality} data={this.state.Speciality} />
+                            </div>
+                            <div className="col-md-5">
                             </div>
                         </div>
                     </div>
@@ -96,6 +130,9 @@ var App = React.createClass({
 });
 //Tao 1 comportment con để hiển thị danh sách các đơn vị
 var SelectLvEducation = React.createClass({
+    onChangeDropdown:function(){
+        var temp = $("#lvEducation").val();
+    },
     loadData: function () {
         this.props.loadData();
     },
@@ -110,7 +147,7 @@ var SelectLvEducation = React.createClass({
             });
         }
         return (
-            <select id="lvEducation" className="form-control" style={{ 'max-width': '300px', 'margin-left': '20px' }}>
+            <select id="lvEducation" className="form-control" onChange={this.onChangeDropdown} style={{ 'max-width': '300px', 'margin-left': '20px' }}>
                 {listSelect}
             </select>
         );
@@ -126,6 +163,10 @@ var SelectDetailLVE = React.createClass({
 });
 
 var SelectDepartment = React.createClass({
+    onChangeDropdown: function () {
+        var temp = $("#department").val();
+        this.props.onChangeSelect();
+    },
     loadData: function () {
         this.props.loadData();
     },
@@ -140,7 +181,7 @@ var SelectDepartment = React.createClass({
             });
         }
         return (
-            <select id="lvEducation" className="form-control" style={{ 'max-width': '300px', 'margin-left': '20px' }}>
+            <select id="department" className="form-control" onChange={this.onChangeDropdown} style={{ 'max-width': '300px', 'margin-left': '20px' }}>
                 {listSelect}
             </select>
         );
@@ -154,5 +195,40 @@ var SelectDetailDepartment = React.createClass({
         );
     }
 });
+
+var SelectSpeciality = React.createClass({
+    onChangeDropdown: function () {
+        var temp = $("#speciality").val();
+        this.props.onChangeSelect();
+    },
+    loadData: function () {
+        this.props.loadData();
+    },
+    render: function () {
+        var index = 0;
+        var listSelect = [];
+        if (this.props.data) {
+            this.props.data.forEach(function (rowitem) {
+                //child function so that, this does mean thi window not the react object
+                index++;
+                listSelect.push(<SelectDetailSpeciality item={rowitem} index={index} loadData={this.loadData} />);
+            });
+        }
+        return (
+            <select id="speciality" className="form-control" onChange={this.onChangeDropdown} style={{ 'max-width': '300px', 'margin-left': '20px' }}>
+                {listSelect}
+            </select>
+        );
+    }
+});
+
+var SelectDetailSpeciality = React.createClass({
+    render: function () {
+        return (
+            <option value={this.props.item.CODEVIEW}>{this.props.item.SPECIALITYNAME}</option>
+        );
+    }
+});
+
 //Render html vao the co Id = "container"
 var AppRendered = React.render(<App />, document.getElementById("content"));//1 comportment lon nhat
