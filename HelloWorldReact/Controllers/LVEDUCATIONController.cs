@@ -34,5 +34,22 @@ namespace HelloWorldReact.Controllers
             }, JsonRequestBehavior.AllowGet);
 
         }
+
+        public JsonResult getNumberYear(string codeview)
+        {
+            int result = 0;
+            //Khai báo lấy dữ liệu
+            LVEDUCATION_BUS bus = new LVEDUCATION_BUS();
+            //Thêm điều kiện lọc theo codeview nếu có nhập
+            result = bus.getNumberYear(codeview);
+            bus.CloseConnection();
+            //Chỉ số đầu tiên của trang hiện tại (đã trừ -1)
+            //Trả về client
+            return Json(new
+            {
+                data = result,//Danh sách
+                ret = 0//ok
+            }, JsonRequestBehavior.AllowGet);
+        }
     }
 }

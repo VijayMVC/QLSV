@@ -24,10 +24,10 @@ namespace HelloWorldReact.Models.DEPARTMENT
         {
             return null;
         }
-        public List<DEPARTMENT_OBJ> getList()
+        public List<DEPARTMENT_OBJ> getListByLvCode(string lveducationCode)
         {
             List<DEPARTMENT_OBJ> lidata = new List<DEPARTMENT_OBJ>();
-            string sql = "SELECT * FROM DEPARTMENT";
+            string sql = "SELECT * FROM DEPARTMENT WHERE LEVELEDUCATIONCODE = "+"'"+ lveducationCode + "'";
             SqlCommand cm = new SqlCommand();
             sql += " ORDER BY CODEVIEW";
             cm.CommandText = sql;

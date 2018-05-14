@@ -6,7 +6,6 @@ var App = React.createClass({
     },
     componentWillMount: function () {
         this.getLvEducation();
-        this.getDepartment();
     },
     getLvEducation: function () {
         fetch("http://localhost:1869/lveducation/getlist")
@@ -27,28 +26,37 @@ var App = React.createClass({
             )
     },
     getDepartment: function () {
-        fetch("http://localhost:1869/department/getlist")
-            .then(res => res.json())
-            .then(
-            (result) => {
-                this.setState({
-                    isLoaded: true,
-                    Department: result.data
-                });
+        var lveducationCode = $("#lvEducation").val();
+        $.ajax({
+            url: 'http://localhost:1869/department/getlistbylvCode',
+            dataType: 'json',
+            data: {
+                lveducationCode: lveducationCode
             },
-            (error) => {
+            success: function (data) {
+                if (data.ret >= 0) {
+                    this.setState({
+                        isLoaded: true,
+                        Department: data.data
+                    });
+                }
+                else {
+                    alert("Lỗi không lấy được dữ liệu");
+                }
+                this.getSpeciality();
+            }.bind(this),
+            error: function (xhr, status, err) {
                 this.setState({
                     isLoaded: true,
-                    error
+                    error: err
                 });
-            }
-            )
+            }.bind(this)
+        });
     },
     getSpeciality: function () {
         var departmentCode = $("#department").val();
-        console.log(departmentCode);
         $.ajax({
-            url: '/SPECIALITY/getListByDepartmentCode',
+            url: 'http://localhost:1869/SPECIALITY/getListByDepartmentCode',
             dataType: 'json',
             data: {
                 departmentCode: departmentCode
@@ -71,15 +79,50 @@ var App = React.createClass({
             error: function (xhr, status, err) {
                 this.setState({
                     isLoaded: true,
-                    error
+                    error: err
                 });
             }.bind(this)
         });
     },
+    getNumberYear: function () {
+        var codeview = $("#lvEducation").val();
+        $.ajax({
+            url: 'http://localhost:1869/lveducation/getNumberYear',
+            dataType: 'json',
+            data: {
+                codeview: codeview
+            },
+            success: function (data) {
+                if (data.ret >= 0) {
+                    this.setState({
+                        isLoaded: true,
+                        numberyear: data.data
+                    });
+                }
+                else {
+                    alert("Lỗi không lấy được dữ liệu");
+                }
+                this.getSpeciality();
+            }.bind(this),
+            error: function (xhr, status, err) {
+                this.setState({
+                    isLoaded: true,
+                    error: err
+                });
+            }.bind(this)
+        });
+    },
+    checkNumber: function () {
+        this.getSpeciality();
+        var temp = $("#semester").val();
+        if (temp > this.state.numberyear * 2) {
+            alert("Nhập sai thông tin kỳ!");
+            $("#semester").val("");
+        }
+    },
     //phuong thuc quan trong nhat-->render html la ngoai
     render: function () {
-        this.getLvEducation();
-        const { error, isLoaded, lvE, Department, Speciality} = this.state;
+        const { error, isLoaded, lvE, Department, Speciality, numberyear} = this.state;
         if (error) {
             return <div>Error: {error.message}</div>;
         } else if (!isLoaded) {
@@ -94,7 +137,7 @@ var App = React.createClass({
                             </div>
                             <div className="col-md-5">
                                 <label style={{'font-size': '20px' }}>Bậc học : </label>
-                                <SelectLvEducation loadData={this.getLvEducation} data={this.state.lvE} />
+                                <SelectLvEducation loadData={this.getLvEducation} data={this.state.lvE} onChangeSelect={this.getDepartment} setNumberYear={this.getNumberYear}/>
                             </div>
                             <div className="col-md-5">
                                 <label style={{ 'font-size': '20px' }}>Ngành học : </label>
@@ -116,10 +159,14 @@ var App = React.createClass({
                             <div className="col-md-1">
                             </div>
                             <div className="col-md-5">
+                                <input type="radio" name="optradio" />
                                 <span>Xem theo chuyên ngành : </span>
                                 <SelectSpeciality loadData={this.getSpeciality} data={this.state.Speciality} />
                             </div>
                             <div className="col-md-5">
+                                <input type="radio" name="optradio" />
+                                <span>Xem theo kỳ học : </span>
+                                <input type="number" id="semester" className="form-control" onChange={this.checkNumber} />
                             </div>
                         </div>
                     </div>
@@ -132,6 +179,8 @@ var App = React.createClass({
 var SelectLvEducation = React.createClass({
     onChangeDropdown:function(){
         var temp = $("#lvEducation").val();
+        this.props.onChangeSelect();
+        this.props.setNumberYear();
     },
     loadData: function () {
         this.props.loadData();

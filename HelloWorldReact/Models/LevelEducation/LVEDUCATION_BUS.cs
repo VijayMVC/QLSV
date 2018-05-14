@@ -45,6 +45,22 @@ namespace HelloWorldReact.Models.LevelEducation
             }
             return lidata;
         }
+
+        public int getNumberYear(string codeview)
+        {
+            int NBY = 0;
+            string sql = "SELECT NUMBERYEAR FROM LEVELEDUCATION WHERE CODEVIEW = "+"'"+ codeview + "'";
+            SqlCommand cm = new SqlCommand();
+            cm.CommandText = sql;
+            cm.CommandType = CommandType.Text;
+            SqlDataReader reader = db.getCommand(cm);
+            while (reader.Read())
+            {
+                NBY = Convert.ToInt16(reader["NUMBERYEAR"]);
+            }
+            return NBY;
+        }
+
         public List<LVEDUCATION_OBJ> FillToOBJ(DataSet ds)
         {
             List<LVEDUCATION_OBJ> lidata = new List<LVEDUCATION_OBJ>();
