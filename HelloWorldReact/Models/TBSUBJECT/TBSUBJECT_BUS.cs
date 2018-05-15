@@ -31,7 +31,8 @@ namespace HelloWorldReact.Models.TBSUBJECT
             SqlCommand cm = new SqlCommand();
             cm.CommandText = sql;
             cm.CommandType = CommandType.StoredProcedure;
-            cm.Parameters.AddWithValue("@specialitycode", obj.speciality);
+            cm.Parameters.AddWithValue("@specialitycode", obj.speciality== null ? "" : obj.speciality);
+            cm.Parameters.AddWithValue("@semester", Convert.ToInt16(obj.semester));
             cm.Parameters.AddWithValue("@leveleducation", obj.leveleducation);
             DataSet ds = new DataSet();
             int ret = db.getCommand(ref ds, "Tmp", cm);

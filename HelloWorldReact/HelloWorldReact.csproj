@@ -1794,6 +1794,7 @@
     <Content Include="Content\plugins\iCheck\square\_all.css" />
     <Content Include="Database\script.sql" />
     <Content Include="Database\script2.sql" />
+    <Content Include="Database\Stored\script.sql" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="fonts\glyphicons-halflings-regular.woff" />

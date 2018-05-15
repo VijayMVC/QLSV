@@ -158,7 +158,8 @@ var App = React.createClass({
                 if (data.ret >= 0) {
                     this.setState({
                         isLoaded: true,
-                        lstSubject: data.data
+                        lstSubject: data.data,
+                        message : data.message
                     });
                     $("#viewModal").modal('show');
                 }
@@ -232,7 +233,7 @@ var App = React.createClass({
                            
                         </div>
                     </div>
-                    <ShowDetailCourse data={this.state.lstSubject} />
+                    <ShowDetailCourse data={this.state.lstSubject} message={this.state.message} />
                 </div>
             );
         }
@@ -345,15 +346,20 @@ var ShowDetailCourse = React.createClass({
     render: function () {
         var listTable = [];
         var index = 0;
+        var check = false;
         if (this.props.data) {
             var lstData = this.props.data;
             this.props.data.forEach(function (obj) {
                 //child function so that, this does mean thi window not the react object
                 if (obj.PARENTCODE == null) {
+                    check = true;
                     index++;
                     listTable.push(<TableDetail data={lstData} parent={obj} index={index} />);
                 }
             });
+            if (!check) {
+                listTable.push(<TableDetailSemester data={lstData} />);
+            }
         }
         return (
             <div className="modal fade" id="viewModal" role="dialog" data-backdrop="static" data-keyboard="false">
@@ -361,7 +367,7 @@ var ShowDetailCourse = React.createClass({
                     <div className="modal-content ">
                         <div className="modal-header" style={{ 'border-bottom': 'solid 2px #ccc' }}>
                             <button type="button" className="close" data-dismiss="modal"></button>
-                            <h4 className="box-title" id="titleOption">Thông tin chương trình</h4>
+                            <h4 className="box-title" id="titleOption">{this.props.message}</h4>
                         </div>
                         <div className="modal-body modalScroll">
                             <form className="form-horizontal">
@@ -443,6 +449,9 @@ var TableRowsParent = React.createClass({
         else {
             var child = this.props.child;
             var ratio = child.RATIO.split(';');
+            if (!this.props.indexParent) {
+                this.props.indexParent = 1;
+            }
             var soTiet = ratio[0] * 15 + ratio[1] * 30;
             return (
                 <tr>
@@ -458,6 +467,32 @@ var TableRowsParent = React.createClass({
     }
 });
 
+var TableDetailSemester = React.createClass({
+    render: function () {
+        var listRow = [];
+        var index = 0;
+        var lstData = this.props.data;
+        this.props.data.forEach(function (obj) {
+            index++;
+            listRow.push(<TableRowsParent data={lstData} child={obj} index={index} />);//lấy cha
+        });
+        return (
+            <table id="viewCT" className="table table-bordered table-hover">
+                <thead>
+                    <tr>
+                        <th>STT</th>
+                        <th>Tên học phần</th>
+                        <th>Số TC</th>
+                        <th>Cấu trúc x(a;b)</th>
+                        <th>Số tiết TKB</th>
+                        <th>Kỳ học</th>
+                    </tr>
+                </thead>
+                <tbody>{listRow}</tbody>
+            </table>
+        );
+    }
+});
 
 //Render html vao the co Id = "container"
 var AppRendered = React.render(<App />, document.getElementById("content"));//1 comportment lon nhat
