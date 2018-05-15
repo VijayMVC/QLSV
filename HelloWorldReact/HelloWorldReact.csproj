@@ -128,10 +128,12 @@
     <Compile Include="Controllers\DEPARTMENTController.cs" />
     <Compile Include="Controllers\LVEDUCATIONController.cs" />
     <Compile Include="Controllers\MenuController.cs" />
+    <Compile Include="Controllers\SPECIALITYController.cs" />
     <Compile Include="Models\DATAINFOBASE.cs" />
     <Compile Include="Models\DBINFOMENU.cs" />
     <Compile Include="Models\DEPARTMENT\DEPARTMENT_BUS.cs" />
     <Compile Include="Models\DEPARTMENT\DEPARTMENT_OBJ.cs" />
+    <Compile Include="Models\EDUCATIONPROGRAM\EDUCATIONPROGRAM_BUS.cs" />
     <Compile Include="Models\LevelEducation\LVEDUCATION_BUS.cs" />
     <Compile Include="Models\LevelEducation\LVEDUCATION_OBJ.cs" />
     <Compile Include="Models\Menu\MENU_BUS.cs" />
@@ -140,6 +142,7 @@
     <Compile Include="Models\SPECIALITY\SPECIALITY_OBJ.cs" />
     <Compile Include="Models\TBSUBJECT\TBSUBJECT_BUS.cs" />
     <Compile Include="Models\TBSUBJECT\TBSUBJECT_OBJ.cs" />
+    <Compile Include="Models\TranferObj.cs" />
     <Compile Include="Models\User\USER_BUS.cs" />
     <Compile Include="Models\User\USER_OBJ.cs" />
     <Compile Include="Utils\Helper\MD5Encrypt.cs" />
@@ -1790,6 +1793,7 @@
     <Content Include="Content\plugins\iCheck\square\yellow.png" />
     <Content Include="Content\plugins\iCheck\square\_all.css" />
     <Content Include="Database\script.sql" />
+    <Content Include="Database\script2.sql" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="fonts\glyphicons-halflings-regular.woff" />
@@ -8741,7 +8745,9 @@
     <Content Include="Views\CTDaoTao\Index.cshtml" />
     <None Include="Views\Home\nationreact.cshtml" />
     <None Include="Views\Home\login.cshtml" />
-    <Content Include="Web.config" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\ReactConfig.cs" />
@@ -8779,6 +8785,7 @@
     <Folder Include="App_Data\" />
     <Folder Include="Views\DEPARTMENT\" />
     <Folder Include="Views\LVEDUCATION\" />
+    <Folder Include="Views\SPECIALITY\" />
   </ItemGroup>
   <ItemGroup>
     <TypeScriptCompile Include="plugins\moment\moment.d.ts" />
