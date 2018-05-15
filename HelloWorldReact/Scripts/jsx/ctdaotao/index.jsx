@@ -175,6 +175,14 @@ var App = React.createClass({
             }.bind(this)
         });
     },
+    printData: function ()
+    {
+        var divToPrint= document.getElementById("printTable");
+        newWin= window.open("");
+        newWin.document.write(divToPrint.outerHTML);
+        newWin.print();
+        newWin.close();
+    },
     //phuong thuc quan trong nhat-->render html la ngoai
     render: function () {
         const { error, isLoaded, lvE, Department, Speciality, numberyear, lstSubject} = this.state;
@@ -225,15 +233,17 @@ var App = React.createClass({
                             </div>
                         </div>
                         <div className="row">
-                            <div className="col-md-4">
+                            <div className="col-md-3">
                             </div>
                             <div className="col-md-4">
-                                <button className="btn-primary form-control" style={{ 'margin-top': '50px' }} onClick={() => this.showView()}>Xem chương trình đào tạo</button>
+                                <button className="btn-primary form-control" style={{ 'margin-top': '50px' }} onClick={() => this.showView()}>Xem chương trình đào tạo</button>                          
                             </div>
-                           
+                        </div>
+                        <div className="row">
+                            <hr />
                         </div>
                     </div>
-                    <ShowDetailCourse data={this.state.lstSubject} message={this.state.message} />
+                    <ShowDetailCourse data={this.state.lstSubject} message={this.state.message} printData={this.printData}/>
                 </div>
             );
         }
@@ -343,6 +353,9 @@ var SelectDetailSpeciality = React.createClass({
 });
 
 var ShowDetailCourse = React.createClass({
+    printData: function () {
+        this.props.printData();
+    },
     render: function () {
         var listTable = [];
         var index = 0;
@@ -362,23 +375,26 @@ var ShowDetailCourse = React.createClass({
             }
         }
         return (
+           
             <div className="modal fade" id="viewModal" role="dialog" data-backdrop="static" data-keyboard="false">
-                <div className="modal-dialog modal-lg" role="document">
-                    <div className="modal-content ">
+                <div className="modal-dialog modal-lg" role="document" >
+                    <div style={{ 'margin-left': '50px' }}>
+                        <button className="btn btn-danger" id="cmdCancel" data-dismiss="modal"><span className="glyphicon glyphicon-remove"></span></button>
+                        <button className="btn btn-primary" onClick={() => this.printData()}><span className="glyphicon glyphicon-download-alt"></span></button>
+                    </div>
+                    <div className="modal-content" id="printTable">
                         <div className="modal-header" style={{ 'border-bottom': 'solid 2px #ccc' }}>
                             <button type="button" className="close" data-dismiss="modal"></button>
                             <h4 className="box-title" id="titleOption">{this.props.message}</h4>
                         </div>
                         <div className="modal-body modalScroll">
-                            <form className="form-horizontal">
+                            <form className="form-horizontal" >
                                 <div className="box-body">
                                     {listTable}
                                 </div>
                             </form>
                         </div>
-                        <button className="btn btn-danger" id="cmdCancel" data-dismiss="modal">
-                                Đóng
-                        </button>
+                       
                     </div>
                 </div>
             </div>
