@@ -1,0 +1,51 @@
+﻿@model IEnumerable<HelloWorldReact.Models.FACULTY.FACULTY_OBJ>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Danh Sách khoa</h2>
+
+<p>
+    @Html.ActionLink("Thêm mới", "Create")
+</p>
+
+<span>Tìm kiếm</span>
+<input type="text" id="search" />
+<br />
+
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.CODEVIEW)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.FACULTYNAME)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.FACULTYDESCRIPTION)
+        </th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.CODEVIEW)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FACULTYNAME)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FACULTYDESCRIPTION)
+            </td>
+            <td>
+                @Html.ActionLink("Sửa", "Edit", new { id = item.CODEVIEW }) |
+                @Html.ActionLink("Xóa", "Delete", new { id = item.CODEVIEW })
+            </td>
+        </tr>
+    }
+
+</table>

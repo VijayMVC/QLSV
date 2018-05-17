@@ -126,6 +126,8 @@
   <ItemGroup>
     <Compile Include="Controllers\CTDaoTaoController.cs" />
     <Compile Include="Controllers\DEPARTMENTController.cs" />
+    <Compile Include="Controllers\FacultyController.cs" />
+    <Compile Include="Controllers\GenreController.cs" />
     <Compile Include="Controllers\LVEDUCATIONController.cs" />
     <Compile Include="Controllers\MenuController.cs" />
     <Compile Include="Controllers\SPECIALITYController.cs" />
@@ -134,6 +136,11 @@
     <Compile Include="Models\DEPARTMENT\DEPARTMENT_BUS.cs" />
     <Compile Include="Models\DEPARTMENT\DEPARTMENT_OBJ.cs" />
     <Compile Include="Models\EDUCATIONPROGRAM\EDUCATIONPROGRAM_BUS.cs" />
+    <Compile Include="Models\FACULTY\FACULTY_BUS.cs" />
+    <Compile Include="Models\FACULTY\FACULTY_OBJ.cs" />
+    <Compile Include="Models\GENRE\GENRE_BUS.cs" />
+    <Compile Include="Models\GENRE\GENRE_OBJ.cs" />
+    <Compile Include="Models\JQueryDataTableParamModel.cs" />
     <Compile Include="Models\LevelEducation\LVEDUCATION_BUS.cs" />
     <Compile Include="Models\LevelEducation\LVEDUCATION_OBJ.cs" />
     <Compile Include="Models\Menu\MENU_BUS.cs" />
@@ -1796,6 +1803,7 @@
     <Content Include="Database\script2.sql" />
     <Content Include="Database\script3.sql" />
     <Content Include="Database\Stored\script.sql" />
+    <Content Include="Database\Stored\StoreProceduce - Nhóm 2.sql" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="fonts\glyphicons-halflings-regular.woff" />
@@ -8745,6 +8753,11 @@
     <Content Include="Scripts\react\react-with-addons-0.12.2.min.js" />
     <Content Include="Scripts\jsx\nationreact.jsx" />
     <Content Include="Views\CTDaoTao\Index.cshtml" />
+    <Content Include="Views\Faculty\Index.cshtml" />
+    <Content Include="Views\Faculty\Delete.cshtml" />
+    <Content Include="Views\Genre\Index.cshtml" />
+    <Content Include="Views\Faculty\Edit.cshtml" />
+    <Content Include="Views\Faculty\Create.cshtml" />
     <None Include="Views\Home\nationreact.cshtml" />
     <None Include="Views\Home\login.cshtml" />
     <Content Include="Web.config">
