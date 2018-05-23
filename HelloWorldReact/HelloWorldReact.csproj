@@ -1795,6 +1795,7 @@
     <Content Include="Database\script.sql" />
     <Content Include="Database\script2.sql" />
     <Content Include="Database\script3.sql" />
+    <Content Include="Database\script4.sql" />
     <Content Include="Database\Stored\script.sql" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />

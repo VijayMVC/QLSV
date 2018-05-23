@@ -24,6 +24,28 @@ namespace HelloWorldReact.Models.SPECIALITY
         {
             return null;
         }
+
+        public List<SPECIALITY_OBJ> searchSpeciality(string dataSearch)
+        {
+            List<SPECIALITY_OBJ> lidata = new List<SPECIALITY_OBJ>();
+            string sql = "SELECT * FROM SPECIALITY WHERE SPECIALITYNAME LIKE '%"+ dataSearch + "%' OR CODEVIEW LIKE '%" + dataSearch + "%'";
+            SqlCommand cm = new SqlCommand();
+            sql += " ORDER BY CODEVIEW";
+            cm.CommandText = sql;
+            cm.CommandType = CommandType.Text;
+            DataSet ds = new DataSet();
+            int ret = db.getCommand(ref ds, "Tmp", cm);
+            if (ret < 0)
+            {
+                return null;
+            }
+            else
+            {
+                lidata = FillToOBJ(ds);
+            }
+            return lidata;
+        }
+
         public List<SPECIALITY_OBJ> getListByDepartmentCode(string departmentCode)
         {
             List<SPECIALITY_OBJ> lidata = new List<SPECIALITY_OBJ>();
@@ -45,6 +67,7 @@ namespace HelloWorldReact.Models.SPECIALITY
             }
             return lidata;
         }
+
         public List<SPECIALITY_OBJ> FillToOBJ(DataSet ds)
         {
             List<SPECIALITY_OBJ> lidata = new List<SPECIALITY_OBJ>();

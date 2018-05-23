@@ -24,6 +24,78 @@ namespace HelloWorldReact.Models.TBSUBJECT
         {
             return null;
         }
+
+        public List<TBSUBJECT_OBJ> searchSubject(string dataSearch)
+        {
+            List<TBSUBJECT_OBJ> lidata = new List<TBSUBJECT_OBJ>();
+            string sql = "SELECT * FROM TABLESUBJECT WHERE SUBJECTNAME LIKE N'%" + dataSearch + "%'  OR CODEVIEW LIKE N'%" + dataSearch + "%' AND PARENTCODE IS NOT NULL ";
+            SqlCommand cm = new SqlCommand();
+            sql += " ORDER BY CODEVIEW";
+            cm.CommandText = sql;
+            cm.CommandType = CommandType.Text;
+            DataSet ds = new DataSet();
+            int ret = db.getCommand(ref ds, "Tmp", cm);
+            if (ret < 0)
+            {
+                return null;
+            }
+            else
+            {
+                lidata = FillToOBJ(ds);
+            }
+            return lidata;
+        }
+
+        public List<TBSUBJECT_OBJ> searchSubjectRequre(string dataSearch)
+        {
+            List<TBSUBJECT_OBJ> lidata = new List<TBSUBJECT_OBJ>();
+            string sql = String.Empty;
+            if (dataSearch != "")
+            {
+                sql = "SELECT * FROM TABLESUBJECT WHERE SUBJECTNAME LIKE N'%" + dataSearch + "%'  OR CODEVIEW LIKE N'%" + dataSearch + "%' AND PARENTCODE IS NOT NULL AND SUBJECTTYPE = 1 ";
+            }
+            else
+            {
+                sql = "SELECT * FROM TABLESUBJECT WHERE PARENTCODE IS NOT NULL AND SUBJECTTYPE = 1 ";
+            }
+            SqlCommand cm = new SqlCommand();
+            sql += " ORDER BY CODEVIEW";
+            cm.CommandText = sql;
+            cm.CommandType = CommandType.Text;
+            DataSet ds = new DataSet();
+            int ret = db.getCommand(ref ds, "Tmp", cm);
+            if (ret < 0)
+            {
+                return null;
+            }
+            else
+            {
+                lidata = FillToOBJ(ds);
+            }
+            return lidata;
+        }
+
+        public List<TBSUBJECT_OBJ> searchSubjectRequreBySpeciality(string dataSearch)
+        {
+            List<TBSUBJECT_OBJ> lidata = new List<TBSUBJECT_OBJ>();
+            string sql = "SELECT * FROM TABLESUBJECT WHERE PARENTCODE IS NOT NULL AND SUBJECTTYPE = 1 AND SPECIALITYCODE = N'"+ dataSearch + "'";
+            SqlCommand cm = new SqlCommand();
+            sql += " ORDER BY CODEVIEW";
+            cm.CommandText = sql;
+            cm.CommandType = CommandType.Text;
+            DataSet ds = new DataSet();
+            int ret = db.getCommand(ref ds, "Tmp", cm);
+            if (ret < 0)
+            {
+                return null;
+            }
+            else
+            {
+                lidata = FillToOBJ(ds);
+            }
+            return lidata;
+        }
+
         public List<TBSUBJECT_OBJ> getListByDepartmentCode(TranferObj obj)
         {
             List<TBSUBJECT_OBJ> lidata = new List<TBSUBJECT_OBJ>();

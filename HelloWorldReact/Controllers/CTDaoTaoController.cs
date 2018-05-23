@@ -1,4 +1,5 @@
 ﻿using HelloWorldReact.Models;
+using HelloWorldReact.Models.SPECIALITY;
 using HelloWorldReact.Models.TBSUBJECT;
 using System;
 using System.Collections.Generic;
@@ -37,6 +38,63 @@ namespace HelloWorldReact.Controllers
                 message = message,
                 ret = 0//ok
             }, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        public JsonResult SearchData(string datasearch ,string filter)
+        {
+            List<TBSUBJECT_OBJ> li = null;
+            List<SPECIALITY_OBJ> lispe = null;
+            if (filter == "1")
+            {
+                TBSUBJECT_BUS bus = new TBSUBJECT_BUS();
+                li = bus.searchSubject(datasearch);
+                bus.CloseConnection();
+                return Json(new
+                {
+                    data = li,
+                    message = "Tìm kiếm thành công",
+                    ret = 0,
+                });
+            }
+            else if(filter == "2")
+            {
+                SPECIALITY_BUS bus = new SPECIALITY_BUS();
+                lispe = bus.searchSpeciality(datasearch);
+                bus.CloseConnection();
+                return Json(new {
+                    data = lispe,
+                    message = "Tìm kiếm thành công",
+                    ret = 0,
+                });
+            }
+            else
+            {
+                TBSUBJECT_BUS bus = new TBSUBJECT_BUS();
+                li = bus.searchSubjectRequre(datasearch);
+                bus.CloseConnection();
+                return Json(new
+                {
+                    data = li,
+                    message = "Tìm kiếm thành công",
+                    ret = 0,
+                });
+            }
+        }
+
+        [HttpPost]
+        public JsonResult SearchRequreSubject(string datasearch)
+        {
+            List<TBSUBJECT_OBJ> li = null;
+            TBSUBJECT_BUS bus = new TBSUBJECT_BUS();
+            li = bus.searchSubjectRequreBySpeciality(datasearch);
+            bus.CloseConnection();
+            return Json(new
+            {
+                data = li,
+                message = "Tìm kiếm thành công",
+                ret = 0,
+            });
         }
     }
 }

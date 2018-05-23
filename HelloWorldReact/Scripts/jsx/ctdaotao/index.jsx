@@ -2,7 +2,7 @@
 //1 comportment lon nhat
 var App = React.createClass({
     getInitialState: function () { //Khởi tạo, data=list department
-        return { data: [], firsttime: 1 };
+        return { data: [], firsttime: 1, showResults: false};
     },
     componentWillMount: function () {
         this.getLvEducation();
@@ -69,10 +69,17 @@ var App = React.createClass({
                     this.setState({
                         isLoaded: true,
                         Speciality: data.data,
+                        specialitySelect: data.data[0].CODEVIEW,
                     });
+                    if (data.data.length == 0) {
+                        this.setState({ specialitySelect : '2'});
+                    }
                 }
                 else {
                     alert("Lỗi không lấy được dữ liệu");
+                    this.setState({
+                        specialitySelect: null
+                    });
                 }
                 //AppRendered.loadData();
                 //pagination(data.total, function () {
@@ -183,6 +190,47 @@ var App = React.createClass({
         newWin.print();
         newWin.close();
     },
+    search: function (item) {
+        if (this.state.showResults) {
+            this.setState({ showResults: false });
+        }
+        var datasearch = this.refs.dataSearch.getDOMNode().value;
+        $.post('http://localhost:1869/CTDaoTao/SearchData', { datasearch: datasearch, filter: item }, function (result) {
+            if (result.ret == 0) {
+                this.setState({
+                    showResults: true,
+                    lstSearch: result.data,
+                    dataSearch: datasearch,
+                    searchType: item
+                });
+            }
+        }.bind(this)
+        );
+    },
+    searchRequreSubject: function () {
+        if (this.state.showResults) {
+            this.setState({ showResults: false });
+        }
+        var datasearch = this.refs.dataSearch.getDOMNode().value;
+        $.post('http://localhost:1869/CTDaoTao/SearchRequreSubject', { datasearch: this.state.specialitySelect }, function (result) {
+            if (result.ret == 0) {
+                this.setState({
+                    showResults: true,
+                    lstSearch: result.data,
+                    dataSearch: datasearch,
+                    searchType: "3"
+                });
+            }
+        }.bind(this)
+        );
+    },
+    hideTable : function () {
+        this.setState({ showResults: false });
+    },
+    setDataBySpeciality: function () {
+        var temp = $("#speciality").val();
+        this.setState({ specialitySelect: temp });
+    },
     //phuong thuc quan trong nhat-->render html la ngoai
     render: function () {
         const { error, isLoaded, lvE, Department, Speciality, numberyear, lstSubject} = this.state;
@@ -193,8 +241,34 @@ var App = React.createClass({
         } else {
             return (
                 <div className="panel panel-default">
-                    <div className="panel-heading"><h3 style={{ 'font-size': '20px' , 'color':'red' ,'font-weight':'bold'}}>Chương trình đào tạo</h3></div>
-                    <div className="panel-body">
+                    <div className="panel-heading">
+                        <div className="row">
+                            <div className="col-md-3">
+                                <h3 style={{ 'font-size': '20px', 'color': 'red', 'font-weight': 'bold' }}>Chương trình đào tạo</h3>
+                            </div>
+                            <div className="col-md-5">
+                                <div className="input-group" style={{ 'padding-top': '15px' }}>
+                                    <input className="form-control" ref="dataSearch" placeholder="Tìm kiếm" />
+                                    <div className="input-group-btn">
+                                        <button type="button" className="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            <span className="caret"></span>
+                                            <span className="sr-only" > Toggle Dropdown</span>
+                                        </button>
+                                        <ul className="dropdown-menu">
+                                            <li><a href="#" onClick={() => this.search("1")}>Môn học</a></li>
+                                            <li><a href="#" onClick={() => this.search("3")}>Môn học Bắt buộc</a></li>
+                                            <li><a href="#" onClick={()=>this.search("2")}>Chuyên ngành</a></li>
+                                        </ul >
+                                        <button type="button" className="btn btn-default" onClick={() => this.search("1")}>Tìm kiếm</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="viewSearch">
+                        {this.state.showResults ? <TableSearch lstSearch={this.state.lstSearch} searchType={this.state.searchType} dataSearch={this.state.dataSearch} closeTable={() => this.hideTable()} /> : null}
+                    </div>
+                    <div className="panel-body" id="main">
                         <div className="row">
                             <div className="col-md-1">
                             </div>
@@ -224,7 +298,7 @@ var App = React.createClass({
                             <div className="col-md-5">
                                 <input type="radio" name="optradio" value={"1"}  />
                                 <span>Xem theo chuyên ngành : </span>
-                                <SelectSpeciality loadData={this.getSpeciality} data={this.state.Speciality} />
+                                <SelectSpeciality loadData={this.getSpeciality} data={this.state.Speciality} onChangeSelect={this.setDataBySpeciality} />
                             </div>
                             <div className="col-md-4">
                                 <input type="radio" name="optradio" value={"2"}  />
@@ -235,21 +309,25 @@ var App = React.createClass({
                         <div className="row">
                             <div className="col-md-3">
                             </div>
-                            <div className="col-md-4">
-                                <button className="btn-primary form-control" style={{ 'margin-top': '50px' }} onClick={() => this.showView()}>Xem chương trình đào tạo</button>                          
+                            <div className="col-md-3">
+                                <button className="btn-primary" style={{ 'margin-top': '50px' }} onClick={() => this.showView()}>Xem chương trình đào tạo</button>
+                            </div>
+                            <div className="col-md-3">
+                                {this.state.specialitySelect != '2' ? <button style={{ 'margin-top': '50px' }} onClick={() => this.searchRequreSubject()}>Xem môn học bắt buộc của chuyên ngành</button> : null}
                             </div>
                         </div>
                         <div className="row">
                             <hr />
                         </div>
                     </div>
-                    <ShowDetailCourse data={this.state.lstSubject} message={this.state.message} printData={this.printData}/>
+                    <ShowDetailCourse data={this.state.lstSubject} message={this.state.message} printData={this.printData} />
                 </div>
             );
         }
     }
 });
 //Tao 1 comportment con để hiển thị danh sách các đơn vị
+
 var SelectLvEducation = React.createClass({
     onChangeDropdown:function(){
         var temp = $("#lvEducation").val();
@@ -322,6 +400,7 @@ var SelectDetailDepartment = React.createClass({
 var SelectSpeciality = React.createClass({
     onChangeDropdown: function () {
         var temp = $("#speciality").val();
+        this.props.onChangeSelect();
     },
     loadData: function () {
         this.props.loadData();
@@ -456,9 +535,9 @@ var TableRowsParent = React.createClass({
                     <td>{this.props.index}</td>
                     <td style={{ 'width':'430px'}}>{parent.SUBJECTNAME}</td>
                     <td>{parent.NUMBEROFCREDIT}</td>
-                    <th></th>
-                    <th></th>
-                    <th></th>
+                    <td></td>
+                    <td></td>
+                    <td></td>
                 </tr>
             );
         }
@@ -474,9 +553,9 @@ var TableRowsParent = React.createClass({
                     <td>{this.props.indexParent}.{this.props.index}</td>
                     <td style={{ 'width': '430px' }}>{child.SUBJECTNAME}</td>
                     <td>{child.NUMBEROFCREDIT}</td>
-                    <th>{child.RATIO}</th>
-                    <th>{soTiet}</th>
-                    <th>{child.EXPECTEDSEMESTER}</th>
+                    <td>{child.RATIO}</td>
+                    <td>{soTiet}</td>
+                    <td>{child.EXPECTEDSEMESTER}</td>
                 </tr>
             );
         }
@@ -507,6 +586,103 @@ var TableDetailSemester = React.createClass({
                 <tbody>{listRow}</tbody>
             </table>
         );
+    }
+});
+
+var TableSearch = React.createClass({
+    onClick: function () {
+        this.props.closeTable();
+    },
+    render: function () {
+        var listRow = [];
+        var index = 0;
+        var lstData = this.props.lstSearch;
+        this.props.lstSearch.forEach(function (obj) {
+            index++;
+            listRow.push(<TableRowsDetail data={obj} index={index} />);
+        });
+        if (this.props.searchType == '1') {
+            return (
+                <div>
+                    <p style={{ 'font-weight': 'bold' }}>Kết quả tìm kiếm môn học theo điều kiện :  '{this.props.dataSearch}'</p>
+                    <table className="table table-bordered table-hover">
+                        <thead style={{ 'font-weight': 'bold' }}>
+                            <td>STT</td>
+                            <td>Mã Môn học</td>
+                            <td>Tên</td>
+                            <td>Kỳ học</td>
+                            <td>Số tín chỉ</td>
+                        </thead>
+                        <tbody>{listRow}</tbody>
+                    </table>
+                    <button className="btn btn-danger" style={{ 'margin-left': '50px' }} onClick={() => this.onClick()}>Ẩn</button>
+                    <hr />
+                </div>
+            );
+        }
+        else if (this.props.searchType == '2') {
+            return (
+                <div>
+                    <p style={{ 'font-weight': 'bold' }}>Kết quả tìm kiếm chuyên ngành theo điều kiện :  '{this.props.dataSearch}'</p>
+                    <table className="table table-bordered table-hover">
+                        <thead style={{ 'font-weight': 'bold' }}>
+                            <td>STT</td>
+                            <td>Mã chuyên ngành</td>
+                            <td>Tên chuyên ngành</td>
+                            <td>Mã ngành</td>
+                        </thead>
+                        <tbody>{listRow}</tbody>
+                    </table>
+                    <button className="btn btn-danger" style={{ 'margin-left': '50px' }} onClick={() => this.onClick()}>Ẩn</button>
+                    <hr />
+                </div>
+            );
+        }
+        else {
+            return (
+                <div>
+                    <p style={{ 'font-weight': 'bold' }}>Kết quả tìm kiếm môn học bắt buộc :  '{this.props.dataSearch}'</p>
+                    <table className="table table-bordered table-hover">
+                        <thead style={{ 'font-weight': 'bold' }}>
+                            <td>STT</td>
+                            <td>Mã Môn học</td>
+                            <td>Tên</td>
+                            <td>Kỳ học</td>
+                            <td>Số tín chỉ</td>
+                        </thead>
+                        <tbody>{listRow}</tbody>
+                    </table>
+                    <button className="btn btn-danger" style={{ 'margin-left': '50px' }} onClick={() => this.onClick()}>Ẩn</button>
+                    <hr />
+                </div>
+            );
+        }
+    }
+});
+
+var TableRowsDetail = React.createClass({
+    render: function () {
+        if (this.props.data.SPECIALITYNAME) {
+            return (
+                <tr>
+                    <td>{this.props.index}</td>
+                    <td>{this.props.data.CODEVIEW}</td>
+                    <td>{this.props.data.SPECIALITYNAME}</td>
+                    <td>{this.props.data.DEPARTMENTCODE}</td>
+                </tr>
+            );
+        }
+        else {
+            return (
+                <tr>
+                    <td>{this.props.index}</td>
+                    <td>{this.props.data.CODEVIEW}</td>
+                    <td>{this.props.data.SUBJECTNAME}</td>
+                    <td>{this.props.data.EXPECTEDSEMESTER}</td>
+                    <td>{this.props.data.NUMBEROFCREDIT}</td>
+                </tr>
+            );
+        }
     }
 });
 
