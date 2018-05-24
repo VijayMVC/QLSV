@@ -55,10 +55,10 @@ namespace HelloWorldReact.Models.FACULTY
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public List<FACULTY_OBJ> GetFaculty(string id)
+        public List<FACULTY_OBJ> GetFaculty(string codeview)
         {
             List<FACULTY_OBJ> lidata = new List<FACULTY_OBJ>();
-            string sql = "GetFaculty '" + id + "'";
+            string sql = "GetFaculty '" + codeview + "'";
             SqlCommand cm = new SqlCommand();
             cm.CommandText = sql;
             cm.CommandType = CommandType.Text;
@@ -81,10 +81,10 @@ namespace HelloWorldReact.Models.FACULTY
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public int DeleteFaculty(string id)
+        public int DeleteFaculty(string codeview)
         {
             int ret = 0;
-            string sql = "DeleteFaculty '" + id + "'";
+            string sql = "DeleteFaculty '" + codeview + "'";
             SqlCommand cm = new SqlCommand();
             cm.CommandText = sql;
             cm.CommandType = CommandType.Text;
@@ -99,10 +99,10 @@ namespace HelloWorldReact.Models.FACULTY
         /// <param name="id"></param>
         /// <param name="obj"></param>
         /// <returns></returns>
-        public int UpdateFaculty(string id, FACULTY_OBJ obj)
+        public int UpdateFaculty(string codeview, FACULTY_OBJ obj)
         {
             int ret = 0;
-            string sql = "UpdateFaculty '" + id + "','" + obj.CODEVIEW + "',N'" + obj.FACULTYNAME + "',N'" + obj.FACULTYDESCRIPTION + "'";
+            string sql = "UpdateFaculty '" + codeview + "','" + obj.CODEVIEW + "',N'" + obj.FACULTYNAME + "',N'" + obj.FACULTYDESCRIPTION + "'";
             SqlCommand cm = new SqlCommand();
             cm.CommandText = sql;
             cm.CommandType = CommandType.Text;

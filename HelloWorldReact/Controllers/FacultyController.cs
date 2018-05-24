@@ -15,14 +15,6 @@ namespace HelloWorldReact.Controllers
             return View();
         }
 
-        [HttpGet]
-        public JsonResult GetData()
-        {
-            var obj = new FACULTY_BUS();
-            var model = obj.GetFacultyList("");
-            return Json(new { data = model }, JsonRequestBehavior.AllowGet);
-        }
-
         [HttpPost]
         public JsonResult GetDataByKey(string key)
         {
@@ -31,47 +23,35 @@ namespace HelloWorldReact.Controllers
             return Json(new { data = model });
         }
 
-        public ActionResult Delete(string id)
+        [HttpPost]
+        public JsonResult GetDataByCodeView(string codeview)
         {
-            var obj = new FACULTY_BUS();
-            var model = (FACULTY_OBJ)obj.GetFaculty(id)[0];
-            return View(model);
+            var bus = new FACULTY_BUS();
+            var obj = (FACULTY_OBJ)bus.GetFaculty(codeview)[0];
+            return Json(obj);
         }
 
-        [HttpPost, ActionName("Delete")]
-        public ActionResult DeleteConfirm(string id)
+        [HttpPost]
+        public void Delete(string id)
         {
-            var obj = new FACULTY_BUS();
-            obj.DeleteFaculty(id);
-            return RedirectToAction("Index");
+            var bus = new FACULTY_BUS();
+            bus.DeleteFaculty(id);
         }
 
-        public ActionResult Edit(string id)
+        [HttpPost]
+        public void Edit(string code, string newcode, string name, string desc)
         {
-            var obj = new FACULTY_BUS();
-            var model = (FACULTY_OBJ)obj.GetFaculty(id)[0];
-            return View(model);
+            var obj = new FACULTY_OBJ(code, name, desc);
+            var bus = new FACULTY_BUS();
+            bus.UpdateFaculty(code, obj);
         }
 
-        [HttpPost, ActionName("Edit")]
-        public ActionResult Update(string id, FACULTY_OBJ obj)
+        [HttpPost]
+        public void Create(string code, string name, string desc)
         {
-            var obj1 = new FACULTY_BUS();
-            obj1.UpdateFaculty(id, obj);
-            return RedirectToAction("Index");
-        }
-
-        public ActionResult Create()
-        {
-            return View();
-        }
-
-        [HttpPost, ActionName("Create")]
-        public ActionResult CreateConfirm(FACULTY_OBJ obj)
-        {
-            var obj1 = new FACULTY_BUS();
-            obj1.CreateFaculty(obj);
-            return RedirectToAction("Index");
+            var obj = new FACULTY_OBJ(code, name, desc);
+            var bus = new FACULTY_BUS();
+            bus.CreateFaculty(obj);
         }
 
     }

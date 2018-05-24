@@ -1,6 +1,6 @@
 ﻿------------------------------
---Lấy thông tin khoa theo tên khoa
---Lấy danh sách khoa nếu tên khoa rỗng
+--Lấy danh sách khoa theo tên khoa
+--Lấy toàn bộ danh sách khoa nếu tên khoa rỗng
 ------------------------------
 CREATE PROC GetFacultyList
 	@NAME NVARCHAR(200)
@@ -19,11 +19,11 @@ END
 --Lấy thông tin khoa theo mã khoa
 ------------------------------
 CREATE PROC GetFaculty
-	@ID VARCHAR(20)
+	@CODEVIEW VARCHAR(20)
 AS
 BEGIN
 SELECT * FROM FACULTY
-WHERE CODEVIEW = @ID
+WHERE CODEVIEW = @CODEVIEW
 END
 
 ------------------------------
@@ -45,15 +45,15 @@ END
 --Cập nhật lại mã khoa ở những bộ môn liên quan
 ------------------------------
 CREATE PROC DeleteFaculty
-	@id VARCHAR(20)
+	@CODEVIEW VARCHAR(20)
 AS
 BEGIN
-DELETE FROM FACULTY WHERE CODEVIEW = @id
+DELETE FROM FACULTY WHERE CODEVIEW = @CODEVIEW
 END
 BEGIN
 UPDATE GENRE
 SET FACULTYCODE = NULL
-WHERE FACULTYCODE = @id
+WHERE FACULTYCODE = @CODEVIEW
 END
 
 ------------------------------
@@ -61,35 +61,37 @@ END
 --Cập nhật lại mã khoa ở những bộ môn liên quan
 ------------------------------
 CREATE PROC UpdateFaculty
-	@ID VARCHAR(20),
-	@NEWID VARCHAR(20),
+	@CODEVIEW VARCHAR(20),
+	@NEWCODEVIEW VARCHAR(20),
 	@NAME NVARCHAR(200),
 	@DESC NVARCHAR(200)
 AS
 BEGIN
 UPDATE FACULTY
-SET CODEVIEW = @NEWID, FACULTYNAME = @NAME, FACULTYDESCRIPTTION = @DESC
-WHERE CODEVIEW = @ID
+SET CODEVIEW = @NEWCODEVIEW, FACULTYNAME = @NAME, FACULTYDESCRIPTION = @DESC
+WHERE CODEVIEW = @CODEVIEW
 END
 BEGIN
 UPDATE GENRE
-SET FACULTYCODE = @NEWID
-WHERE FACULTYCODE = @ID
+SET FACULTYCODE = @NEWCODEVIEW
+WHERE FACULTYCODE = @CODEVIEW
 END
 
 ------------------------------
---Lấy thông tin bộ môn theo mã khoa
---Lấy danh sách bộ môn nếu mã khoa rỗng
+--Lấy danh sách bộ môn theo tên và mã khoa
+--Lấy toàn bộ danh sách bộ môn nếu mã khoa rỗng
 ------------------------------
 CREATE PROC GetGenreList
-	@ID VARCHAR(20)
+	@NAME NVARCHAR(100),
+	@FACULTYCODE NVARCHAR(20)
 AS
-IF @ID = ''
+IF @NAME = ''
 BEGIN
 SELECT * FROM GENRE
+WHERE FACULTYCODE = @FACULTYCODE
 END
 ELSE
 BEGIN
 SELECT * FROM GENRE
-WHERE FACULTYCODE = @ID
+WHERE GENRENAME LIKE '%'+@NAME+'%' AND FACULTYCODE = @FACULTYCODE
 END

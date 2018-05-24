@@ -35,68 +35,75 @@
     //Lấy dữ liệu và vẽ bảng
     function BindDataTable(key) {
 
-        table = $('#faculty-tbl').DataTable({
-            "searching": false,
-            "ajax": {
-                "url": '/faculty/GetDataByKey/',
-                "type": 'POST',
-                "data": { key: key }
-            },
-            "columns": [
-                {
-                    "className": 'details-control',
-                    "orderable": false,
-                    "data": null,
-                    "defaultContent": ''
+        if ($.fn.DataTable.isDataTable("#faculty-tbl")) {
+
+            $('#faculty-tbl').DataTable().clear();
+            $('#faculty-tbl').DataTable().destroy();
+            BindDataTable(key);
+
+        }
+        else {
+
+            table = $('#faculty-tbl').DataTable({
+                "searching": false,
+                "ajax": {
+                    "url": '/faculty/GetDataByKey/',
+                    "type": 'POST',
+                    "data": { key: key }
                 },
-                { "data": "CODEVIEW" },
-                { "data": "FACULTYNAME" },
-                {
-                    "data": "CODE",
-                    "render": function (EmployeeId, type, full, meta) {
-
-                        return '<a href="#" onclick="AddEditEmployee(' + EmployeeId + ')" title="' + EmployeeId + '"><i class="glyphicon glyphicon-pencil"></i></a>'
+                "columns": [
+                    {
+                        "className": 'details-control',
+                        "orderable": false,
+                        "data": null,
+                        "defaultContent": ''
+                    },
+                    { "data": "CODEVIEW" },
+                    { "data": "FACULTYNAME" },
+                    {
+                        "data": "CODEVIEW",
+                        "render": function (CODEVIEW, undefined, full, meta) {
+                            return '<a style="margin-right: 20px" onclick="EditFaculty(' + "'" + CODEVIEW + "'" + ')" title="Sửa"><i class="glyphicon glyphicon-pencil"></i></a><a onclick="EditFaculty(' + "'" + CODEVIEW + "'" + ')" title="Xóa"><i class="glyphicon glyphicon-pencil"></i></a>'
+                        }
                     }
-                }
-            ]
+                ]
 
-            //"bServerSide": false,
-            //"sAjaxSource": "/faculty/GetDataByKey/",
-            //"fnServerData": function (sSource, aoData, fnCallback) {
+                //"bServerSide": false,
+                //"sAjaxSource": "/faculty/GetDataByKey/",
+                //"fnServerData": function (sSource, aoData, fnCallback) {
 
-            //    aoData.push({ "name": "key", "value": key });
+                //    aoData.push({ "name": "key", "value": key });
 
-            //    $.ajax({
+                //    $.ajax({
 
-            //        type: "POST",
-            //        data: aoData,
-            //        url: sSource,
-            //        success: fnCallback
-            //    })
+                //        type: "POST",
+                //        data: aoData,
+                //        url: sSource,
+                //        success: fnCallback
+                //    })
 
-            //},
-            //"aoColumns": [
-            //    {
-            //        "className": 'details-control',
-            //        "orderable": false,
-            //        "data": null,
-            //        "defaultContent": ''
-            //    },
-            //    { "mData": "CODEVIEW" },
-            //    { "mData": "FACULTYNAME" },
-            //    {
-            //        "mData": "CODE",
-            //        "render": function (EmployeeId, type, full, meta) {
+                //},
+                //"aoColumns": [
+                //    {
+                //        "className": 'details-control',
+                //        "orderable": false,
+                //        "data": null,
+                //        "defaultContent": ''
+                //    },
+                //    { "mData": "CODEVIEW" },
+                //    { "mData": "FACULTYNAME" },
+                //    {
+                //        "mData": "CODE",
+                //        "render": function (EmployeeId, type, full, meta) {
 
-            //            return '<a href="#" onclick="AddEditEmployee(' + EmployeeId + ')"><i class="glyphicon glyphicon-pencil"></i></a>'
-            //        }
-            //    },
-
-
-            //]
+                //            return '<a href="#" onclick="AddEditEmployee(' + EmployeeId + ')"><i class="glyphicon glyphicon-pencil"></i></a>'
+                //        }
+                //    },
+                //]
 
 
-        });
+            });
+        }
 
     }
 
@@ -149,16 +156,80 @@
     //Hiện form mới khoa
     $(function () {
         $('#create-btn').on('click', function () {
-            $('.create').show();
+            $('#create-faculty').show();
         });
     });
 
     //Hủy form thêm mới khoa
     $(function () {
-        $('#cancel-faculty').on('click', function () {
-            $('.create').hide();
+        $('#cancel-create').on('click', function () {
+            $('#create-faculty').hide();
         });
     });
+
+    //Xác nhận thêm mới
+    $(function () {
+        $('#confirm-create').on('click', function () {
+            var code = $('#new-codeview').val();
+            var name = $('#new-facultyname').val();
+            var desc = $('#new-facultydescription').val();
+
+            $.ajax({
+                url: '/faculty/Create',
+                type: 'POST',
+                data: { code: code, name: name, desc: desc },
+
+            });
+
+            BindDataTable();
+
+            $('#create-faculty').hide();
+
+        });
+    });
+
+    //Hủy form sửa khoa
+    $(function () {
+        $('#cancel-edit').on('click', function () {
+            $('#edit-faculty').hide();
+        });
+    });
+
+    //Hiện form sửa khoa và xác nhận sửa
+    function EditFaculty(codeview) {
+        $.ajax({
+            url: '/faculty/GetDataByCodeView',
+            type: 'POST',
+            data: { codeview: codeview },
+            dataType: 'json',
+            success: function (result) {
+                $('#edit-codeview').val(result.CODEVIEW);
+                $('#edit-facultyname').val(result.FACULTYNAME);
+                $('#edit-facultydescription').val(result.FACULTYDESCRIPTION);
+            }
+        });
+
+        $('#edit-faculty').show();
+
+        //Xác nhận sửa
+        $('#confirm-edit').on('click', function () {
+            var newcode = $('#edit-codeview').val();
+            var name = $('#edit-facultyname').val();
+            var desc = $('#edit-facultydescription').val();
+
+            $.ajax({
+                url: '/faculty/Edit',
+                type: 'POST',
+                data: { code: codeview, newcode: newcode, name: name, desc: desc },
+
+            });
+
+            BindDataTable();
+
+            $('#edit-faculty').hide();
+        });
+    };
+    
 
 </script>
 
@@ -181,29 +252,57 @@
     <tbody></tbody>
 </table>
 
-<div class="create ">
+@* Form thêm mới *@
+<div class="create" id="create-faculty">
     <div class="create-form">
         <h2>Thêm mới</h2>
 
         <table>
             <tr>
                 <td>Mã khoa</td>
-                <td><input type="text" /></td>
+                <td><input type="text" id="new-codeview" /></td>
             </tr>
 
             <tr>
                 <td>Tên khoa</td>
-                <td><input type="text" /></td>
+                <td><input type="text" id="new-facultyname" /></td>
             </tr>
 
             <tr>
                 <td>Mô tả khoa</td>
-                <td><input type="text" /></td>
+                <td><input type="text" id="new-facultydescription" /></td>
             </tr>
         </table>
 
-        <button id="confirm-faculty">Xác nhận</button>
-        <button id="cancel-faculty">Hủy</button>
+        <button id="confirm-create">Xác nhận</button>
+        <button id="cancel-create">Hủy</button>
+    </div>
+</div>
+
+@* Form sửa thông tin *@
+<div class="create" id="edit-faculty">
+    <div class="create-form">
+        <h2>Sửa</h2>
+
+        <table>
+            <tr>
+                <td>Mã khoa</td>
+                <td><input type="text" id="edit-codeview" /></td>
+            </tr>
+
+            <tr>
+                <td>Tên khoa</td>
+                <td><input type="text" id="edit-facultyname" /></td>
+            </tr>
+
+            <tr>
+                <td>Mô tả khoa</td>
+                <td><input type="text" id="edit-facultydescription" /></td>
+            </tr>
+        </table>
+
+        <button id="confirm-edit">Xác nhận</button>
+        <button id="cancel-edit">Hủy</button>
     </div>
 </div>
 

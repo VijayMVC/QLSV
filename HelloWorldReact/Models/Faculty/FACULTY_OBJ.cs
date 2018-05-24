@@ -19,5 +19,14 @@ namespace HelloWorldReact.Models.FACULTY
         [Display(Name = "Mô tả khoa")]
         [StringLength(200)]
         public string FACULTYDESCRIPTION { get; set; }
+
+        public FACULTY_OBJ() { }
+
+        public FACULTY_OBJ(string codeview, string facultyname, string facultydescription)
+        {
+            this.CODEVIEW = codeview;
+            this.FACULTYNAME = facultyname;
+            this.FACULTYDESCRIPTION = facultydescription;
+        }
     }
 }
