@@ -8,7 +8,7 @@
 
 <link href="~/Content/dist/css/jquery.dataTables.min.css" rel="stylesheet" />
 
-<link href="~/Content/dist/css/faculty.css" rel="stylesheet" />
+<link href="~/Content/dist/css/admin.css" rel="stylesheet" />
 
 <script src="~/Content/dist/js/jquery-3.3.1.min.js"></script>
 
@@ -46,10 +46,15 @@
 
             table = $('#faculty-tbl').DataTable({
                 "searching": false,
+                "dom": 'rt<"bottom"pli><"clear">',
                 "ajax": {
                     "url": '/faculty/GetDataByKey/',
                     "type": 'POST',
-                    "data": { key: key }
+                    "data": { key: key },
+                    "dataType": "text",
+                    "success": function (data) {
+                        alert(data);
+                    }
                 },
                 "columns": [
                     {
@@ -63,7 +68,7 @@
                     {
                         "data": "CODEVIEW",
                         "render": function (CODEVIEW, undefined, full, meta) {
-                            return '<a style="margin-right: 20px" onclick="EditFaculty(' + "'" + CODEVIEW + "'" + ')" title="Sửa"><i class="glyphicon glyphicon-pencil"></i></a><a onclick="EditFaculty(' + "'" + CODEVIEW + "'" + ')" title="Xóa"><i class="glyphicon glyphicon-pencil"></i></a>'
+                            return '<a style="margin-right: 20px" onclick="EditFaculty(' + "'" + CODEVIEW + "'" + ')" title="Sửa"><i class="glyphicon glyphicon-pencil"></i></a><a onclick="DeleteFaculty(' + "'" + CODEVIEW + "'" + ')" title="Xóa"><i class="glyphicon glyphicon-remove"></i></a>'
                         }
                     }
                 ]
@@ -195,6 +200,13 @@
         });
     });
 
+    //Hủy thông báo xóa
+    $(function () {
+        $('#cancel-delete').on('click', function () {
+            $('#delete-faculty').hide();
+        });
+    });
+
     //Hiện form sửa khoa và xác nhận sửa
     function EditFaculty(codeview) {
         $.ajax({
@@ -227,6 +239,27 @@
             BindDataTable();
 
             $('#edit-faculty').hide();
+        });
+    };
+
+    //Hiện thông báo và xác nhận xóa
+    function DeleteFaculty(codeview) {
+        
+        $('#delete-faculty').show();
+
+        //Xác nhận sửa
+        $('#confirm-delete').on('click', function () {
+            
+            $.ajax({
+                url: '/faculty/Delete',
+                type: 'POST',
+                data: { codeview: codeview },
+
+            });
+
+            BindDataTable();
+
+            $('#delete-faculty').hide();
         });
     };
     
@@ -304,5 +337,18 @@
         <button id="confirm-edit">Xác nhận</button>
         <button id="cancel-edit">Hủy</button>
     </div>
+</div>
+
+@* Thông báo xóa *@
+<div class="create" id="delete-faculty">
+    <div class="message-form">
+        <h2>Xóa</h2>
+        <br />
+        Bạn có chắc muốn xóa?
+        <br />
+        <button id="confirm-delete">Đồng ý</button>
+        <button id="cancel-delete">Hủy</button>
+    </div>
+    
 </div>
 

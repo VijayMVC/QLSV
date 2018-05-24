@@ -30,10 +30,10 @@ namespace HelloWorldReact.Models.GENRE
         /// Lấy danh sách bộ môn
         /// </summary>
         /// <returns></returns>
-        public List<GENRE_OBJ> GetGenreList(string id)
+        public List<GENRE_OBJ> GetGenreList(string name, string facultycode)
         {
             List<GENRE_OBJ> lidata = new List<GENRE_OBJ>();
-            string sql = "GetGenreList '" + id + "'";
+            string sql = "GetGenreList '" + name + "','" + facultycode + "'";
             SqlCommand cm = new SqlCommand();
             cm.CommandText = sql;
             cm.CommandType = CommandType.Text;
@@ -50,13 +50,80 @@ namespace HelloWorldReact.Models.GENRE
             return lidata;
         }
 
-        public bool DeleteGenre(string id)
+        /// <summary>
+        /// Lấy thông tin bộ theo mã
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public List<GENRE_OBJ> GetGenre(string codeview)
         {
-            string sql = "DELETE FROM FACULTY WHERE CODEVIEW = '" + id + "'";
+            List<GENRE_OBJ> lidata = new List<GENRE_OBJ>();
+            string sql = "GetGenre '" + codeview + "'";
             SqlCommand cm = new SqlCommand();
             cm.CommandText = sql;
             cm.CommandType = CommandType.Text;
-            return true;
+            DataSet ds = new DataSet();
+            int ret = db.getCommand(ref ds, "Tmp", cm);
+            if (ret < 0)
+            {
+                return null;
+            }
+            else
+            {
+                lidata = FillToOBJ(ds);
+            }
+            return lidata;
+        }
+
+        /// <summary>
+        /// Xóa một bộ môn
+        /// Cập nhật lại mã bộ môn ở môn học liên quan
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public int DeleteGenre(string codeview)
+        {
+            int ret = 0;
+            string sql = "DeleteGenre '" + codeview + "'";
+            SqlCommand cm = new SqlCommand();
+            cm.CommandText = sql;
+            cm.CommandType = CommandType.Text;
+            ret = db.doCommand(ref cm);
+            return ret;
+        }
+
+        /// <summary>
+        /// Cập nhật thông tin một bộ môn
+        /// Cập nhật môn học liên quan
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="obj"></param>
+        /// <returns></returns>
+        public int UpdateGenre(string codeview, GENRE_OBJ obj)
+        {
+            int ret = 0;
+            string sql = "UpdateGenre '" + codeview + "','" + obj.CODEVIEW + "',N'" + obj.GENRENAME + "',N'" + obj.GENREDESCRIPTION + "','" + obj.FACULTYCODE + "'";
+            SqlCommand cm = new SqlCommand();
+            cm.CommandText = sql;
+            cm.CommandType = CommandType.Text;
+            ret = db.doCommand(ref cm);
+            return ret;
+        }
+
+        /// <summary>
+        /// Thêm mới một bộ môn
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
+        public int CreateGenre(GENRE_OBJ obj)
+        {
+            int ret = 0;
+            string sql = "CreateGenre '" + obj.CODE + "','" + obj.CODEVIEW + "',N'" + obj.GENRENAME + "',N'" + obj.GENREDESCRIPTION + "','" + obj.FACULTYCODE + "'";
+            SqlCommand cm = new SqlCommand();
+            cm.CommandText = sql;
+            cm.CommandType = CommandType.Text;
+            ret = db.doCommand(ref cm);
+            return ret;
         }
 
         /// <summary>

@@ -1,0 +1,382 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Danh sách bộ môn</h2>
+
+<link href="~/Content/dist/css/jquery.dataTables.min.css" rel="stylesheet" />
+
+<link href="~/Content/dist/css/admin.css" rel="stylesheet" />
+
+<script src="~/Content/dist/js/jquery-3.3.1.min.js"></script>
+
+<script src="~/Content/dist/js/jquery.dataTables.min.js"></script>
+
+<script>
+    var table;
+
+    $(document).ready(function () {
+
+        AjaxInit();
+
+        BindDataTable();
+    });
+
+    //Nạp options khoa để hiển thị
+    function AjaxInit() {
+        $.ajax({
+            url: '/faculty/GetDataByKey',
+            type: 'POST',
+            data: { key: '' },
+            dataType: 'json',
+            success: function (result) {
+                $.each(result, function (i, item) {
+                    //alert(i + ": " + item.CODEVIEW);
+                    $('.select').append('<option value="' + item.CODEVIEW + '"> ' + item.FACULTYNAME + '</option >');
+                });
+            }
+        });
+    };
+
+    //Hiển thị bộ môn theo khoa
+    $(function () {
+        $('#faculty-option').on('change', function () {
+            var facultycode = $('#faculty-option').val();
+            //alert(facultycode);
+            BindDataTable('', facultycode);
+        });
+    });
+
+    /* Formatting function for row details - modify as you need */
+    function format(d) {
+        // `d` is the original data object for the row
+        return '<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">' +
+            '<tr>' +
+            '<td>Mô tả bộ môn:</td>' +
+            '<td>' + d.GENREDESCRIPTION + '</td>' +
+            '</tr>' +
+            '</table>';
+    }
+
+    //Lấy dữ liệu và vẽ bảng
+    function BindDataTable(key, facultycode) {
+
+        if ($.fn.DataTable.isDataTable("#genre-tbl")) {
+
+            $('#genre-tbl').DataTable().clear();
+            $('#genre-tbl').DataTable().destroy();
+            BindDataTable(key, facultycode);
+
+        }
+        else {
+
+            table = $('#genre-tbl').DataTable({
+                "searching": false,
+                "dom": 'rt<"bottom"pli><"clear">',
+                "ajax": {
+                    "url": '/genre/GetDataByKey/',
+                    "type": 'POST',
+                    "data": { key: key, facultycode: facultycode }
+                },
+                "columns": [
+                    {
+                        "className": 'details-control',
+                        "orderable": false,
+                        "data": null,
+                        "defaultContent": ''
+                    },
+                    { "data": "CODEVIEW" },
+                    { "data": "GENRENAME" },
+                    { "data": "FACULTYCODE" },
+                    {
+                        "data": "CODEVIEW",
+                        "render": function (CODEVIEW, undefined, full, meta) {
+                            return '<a style="margin-right: 20px" onclick="EditGenre(' + "'" + CODEVIEW + "'" + ')" title="Sửa"><i class="glyphicon glyphicon-pencil"></i></a><a onclick="DeleteGenre(' + "'" + CODEVIEW + "'" + ')" title="Xóa"><i class="glyphicon glyphicon-remove"></i></a>'
+                        }
+                    }
+                ]
+            });
+        }
+
+    }
+
+    //Hiện child row
+    $(function () {
+        $('#genre-tbl tbody').on('click', 'td.details-control', function () {
+            var tr = $(this).closest('tr');
+            var row = table.row(tr);
+
+            if (row.child.isShown()) {
+                // This row is already open - close it
+                row.child.hide();
+                tr.removeClass('shown');
+            }
+            else {
+                // Open this row
+                row.child(format(row.data())).show();
+                tr.addClass('shown');
+            }
+        });
+    });
+
+    //Hiển thị kết quả tìm kiếm
+    $(function () {
+        $('#genre-search-input').keyup(function () {
+            var key = $('#genre-search-input').val();
+            //var url = "/genre/GetDataByKey/"
+
+            //$.post(url, { key: key }, function (result) {
+            //    alert(result);
+            //});
+
+            var table;
+
+            if ($.fn.DataTable.isDataTable("#genre-tbl")) {
+
+                $('#genre-tbl').DataTable().clear();
+                $('#genre-tbl').DataTable().destroy();
+                BindDataTable(key, facultycode);
+
+            }
+            else {
+
+                BindDataTable(key, facultycode);
+
+            }
+        });
+    });
+
+    //Hiện form mới bộ môn
+    $(function () {
+        $('#genre-create-btn').on('click', function () {
+            $('#create-genre').show();
+        });
+    });
+
+    //Hủy form thêm mới bộ môn
+    $(function () {
+        $('#genre-cancel-create').on('click', function () {
+            $('#create-genre').hide();
+        });
+    });
+
+    //Xác nhận thêm mới
+    $(function () {
+        $('#genre-confirm-create').on('click', function () {
+            var code = $('#new-codeview').val();
+            var name = $('#new-genrename').val();
+            var desc = $('#new-genredescription').val();
+            var facultycode = $('#create-facultycode').val();
+
+            $.ajax({
+                url: '/genre/Create',
+                type: 'POST',
+                data: { code: code, name: name, desc: desc, facultycode: facultycode },
+
+            });
+
+            BindDataTable();
+
+            $('#create-genre').hide();
+
+        });
+    });
+
+    //Hủy form sửa khoa
+    $(function () {
+        $('#genre-cancel-edit').on('click', function () {
+            $('#edit-genre').hide();
+        });
+    });
+
+    //Hiện form sửa khoa và xác nhận sửa
+    function EditGenre(codeview) {
+        $.ajax({
+            url: '/genre/GetDataByCodeView',
+            type: 'POST',
+            data: { codeview: codeview },
+            dataType: 'json',
+            success: function (result) {
+                $('#edit-codeview').val(result.CODEVIEW);
+                $('#edit-genrename').val(result.GENRENAME);
+                $('#edit-genredescription').val(result.GENREDESCRIPTION);
+                $('#edit-facultycode option[value=' + result.FACULTYCODE + ']').prop('selected', 'selected').change();
+            }
+        });
+
+        $('#edit-genre').show();
+
+        //Xác nhận sửa
+        $('#genre-confirm-edit').on('click', function () {
+            var newcode = $('#edit-codeview').val();
+            var name = $('#edit-genrename').val();
+            var desc = $('#edit-genredescription').val();
+            var facultycode = $('#edit-facultycode').val();
+
+            $.ajax({
+                url: '/genre/Edit',
+                type: 'POST',
+                data: { code: codeview, newcode: newcode, name: name, desc: desc, facultycode: facultycode },
+
+            });
+
+            BindDataTable();
+
+            $('#edit-genre').hide();
+        });
+    };
+
+    //Hiện thông báo và xác nhận xóa
+    function DeleteGenre(codeview) {
+
+        $('#delete-genre').show();
+
+        //Xác nhận xóa
+        $('#genre-confirm-delete').on('click', function () {
+
+            $.ajax({
+                url: '/genre/Delete',
+                type: 'POST',
+                data: { codeview: codeview },
+
+            });
+
+            BindDataTable();
+
+            $('#delete-genre').hide();
+        });
+    };
+
+    //Hủy thông báo xóa
+    $(function () {
+        $('#genre-cancel-delete').on('click', function () {
+            $('#delete-genre').hide();
+        });
+    });
+
+    //Chọn hiển thị theo khoa hoặc không
+    $(function () {
+        $('#check-faculty').click(function () {
+            if ($(this).is(":checked")) {
+                $('#faculty-option').prop('disabled', false);
+            }
+            else {
+                $('#faculty-option').prop('disabled', 'disabled');
+            }
+        });
+
+    });
+
+
+
+
+
+</script>
+
+Tìm kiếm: <input type="text" name="genre-search-input" id="genre-search-input" />
+
+<button id="genre-create-btn" style="float: right">Thêm mới</button>
+
+<input type="checkbox" id="check-faculty" />
+
+Khoa: <select id="faculty-option" disabled class="select">
+    <option value="">Tất cả</option>
+    <option value="">Không</option>
+</select>
+
+<table id="genre-tbl" class="display">
+    <thead>
+        <tr>
+            <th></th>
+            <th>Mã bộ môn</th>
+            <th>Tên bộ môn</th>
+            <th>Mã khoa</th>
+            <th></th>
+        </tr>
+    </thead>
+
+    <tbody></tbody>
+</table>
+
+@* Form thêm mới *@
+<div class="create" id="create-genre">
+    <div class="create-form">
+        <h2>Thêm mới</h2>
+
+        <table>
+            <tr>
+                <td>Mã bộ môn</td>
+                <td><input type="text" id="new-codeview" /></td>
+            </tr>
+
+            <tr>
+                <td>Tên bộ môn</td>
+                <td><input type="text" id="new-genrename" /></td>
+            </tr>
+
+            <tr>
+                <td>Mô tả bộ môn</td>
+                <td><input type="text" id="new-genredescription" /></td>
+            </tr>
+
+            <tr>
+                <td>Khoa</td>
+                <td>
+                    <select id="create-facultycode" class="select"></select>
+                </td>
+            </tr>
+        </table>
+
+        <button id="genre-confirm-create">Xác nhận</button>
+        <button id="genre-cancel-create">Hủy</button>
+    </div>
+</div>
+
+@* Form sửa thông tin *@
+<div class="create" id="edit-genre">
+    <div class="create-form">
+        <h2>Sửa</h2>
+
+        <table>
+            <tr>
+                <td>Mã bộ môn</td>
+                <td><input type="text" id="edit-codeview" /></td>
+            </tr>
+
+            <tr>
+                <td>Tên bộ môn</td>
+                <td><input type="text" id="edit-genrename" /></td>
+            </tr>
+
+            <tr>
+                <td>Mô tả bộ môn</td>
+                <td><input type="text" id="edit-genredescription" /></td>
+            </tr>
+
+            <tr>
+                <td>Khoa</td>
+                <td>
+                    <select id="edit-facultycode" class="select"></select>
+                </td>
+            </tr>
+        </table>
+
+        <button id="genre-confirm-edit">Xác nhận</button>
+        <button id="genre-cancel-edit">Hủy</button>
+    </div>
+</div>
+
+@* Thông báo xóa *@
+<div class="create" id="delete-genre">
+    <div class="message-form">
+        <h2>Xóa</h2>
+        <br />
+        Bạn có chắc muốn xóa?
+        <br />
+        <button id="genre-confirm-delete">Đồng ý</button>
+        <button id="genre-cancel-delete">Hủy</button>
+    </div>
+
+</div>

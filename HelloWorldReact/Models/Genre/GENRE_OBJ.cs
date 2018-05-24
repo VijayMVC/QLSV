@@ -6,7 +6,7 @@ using System.Web;
 
 namespace HelloWorldReact.Models.GENRE
 {
-    public class GENRE_OBJ
+    public class GENRE_OBJ : DATAINFOBASE
     {
         [Display(Name = "Mã")]
         [StringLength(100)]
@@ -23,5 +23,15 @@ namespace HelloWorldReact.Models.GENRE
         [Display(Name = "Mã khoa")]
         [StringLength(100)]
         public string FACULTYCODE { get; set; }
+
+        public GENRE_OBJ() { }
+
+        public GENRE_OBJ(string codeview, string genrename, string genredescription, string facultycode)
+        {
+            this.CODEVIEW = codeview;
+            this.GENRENAME = genrename;
+            this.GENREDESCRIPTION = genredescription;
+            this.FACULTYCODE = facultycode;
+        }
     }
 }

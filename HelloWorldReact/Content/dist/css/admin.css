@@ -17,7 +17,7 @@ tr.shown td.details-control {
     background: rgba(128, 128, 128, 0.5);
 }
 
-.create-form{
+.create-form {
     text-align: center;
     position: absolute;
     top: calc(50vh - 200px);
@@ -27,7 +27,36 @@ tr.shown td.details-control {
     background: #fff;
 }
 
-table{
+.message-form {
+    text-align: center;
+    position: absolute;
+    top: calc(50vh - 100px);
+    left: calc(50vw - 150px);
+    height: 200px;
+    width: 300px;
+    background: #fff;
+}
+
+table {
     width: 100%;
     height: 65%;
+}
+
+select {
+    line-height: 26px;
+    height: 26px;
+    width: 175px;
+}
+
+.dataTables_wrapper .dataTables_paginate {
+    float: left;
+}
+
+.dataTables_wrapper .dataTables_length {
+    margin-top: 10px;
+}
+
+.dataTables_wrapper .dataTables_info {
+    clear: none;
+    float: right;
 }

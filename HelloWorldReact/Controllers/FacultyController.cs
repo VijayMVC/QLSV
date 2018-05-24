@@ -15,6 +15,11 @@ namespace HelloWorldReact.Controllers
             return View();
         }
 
+        /// <summary>
+        /// Hiển thị dữ liệu theo tên
+        /// </summary>
+        /// <param name="key"></param>
+        /// <returns></returns>
         [HttpPost]
         public JsonResult GetDataByKey(string key)
         {
@@ -23,6 +28,11 @@ namespace HelloWorldReact.Controllers
             return Json(new { data = model });
         }
 
+        /// <summary>
+        /// Hiển thị dữ liệu theo mã
+        /// </summary>
+        /// <param name="codeview"></param>
+        /// <returns></returns>
         [HttpPost]
         public JsonResult GetDataByCodeView(string codeview)
         {
@@ -31,21 +41,38 @@ namespace HelloWorldReact.Controllers
             return Json(obj);
         }
 
+        /// <summary>
+        /// Xóa theo mã
+        /// </summary>
+        /// <param name="id"></param>
         [HttpPost]
-        public void Delete(string id)
+        public void Delete(string codeview)
         {
             var bus = new FACULTY_BUS();
-            bus.DeleteFaculty(id);
+            bus.DeleteFaculty(codeview);
         }
 
+        /// <summary>
+        /// Sửa theo mã
+        /// </summary>
+        /// <param name="code"></param>
+        /// <param name="newcode"></param>
+        /// <param name="name"></param>
+        /// <param name="desc"></param>
         [HttpPost]
         public void Edit(string code, string newcode, string name, string desc)
         {
-            var obj = new FACULTY_OBJ(code, name, desc);
+            var obj = new FACULTY_OBJ(newcode, name, desc);
             var bus = new FACULTY_BUS();
             bus.UpdateFaculty(code, obj);
         }
 
+        /// <summary>
+        /// Tạo mới
+        /// </summary>
+        /// <param name="code"></param>
+        /// <param name="name"></param>
+        /// <param name="desc"></param>
         [HttpPost]
         public void Create(string code, string name, string desc)
         {
