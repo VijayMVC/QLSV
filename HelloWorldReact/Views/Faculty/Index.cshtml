@@ -1,0 +1,209 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Index</h2>
+
+<link href="~/Content/dist/css/jquery.dataTables.min.css" rel="stylesheet" />
+
+<link href="~/Content/dist/css/faculty.css" rel="stylesheet" />
+
+<script src="~/Content/dist/js/jquery-3.3.1.min.js"></script>
+
+<script src="~/Content/dist/js/jquery.dataTables.min.js"></script>
+
+<script>
+    var table;
+
+    $(document).ready(function () {
+        BindDataTable();
+    });
+
+    /* Formatting function for row details - modify as you need */
+    function format(d) {
+        // `d` is the original data object for the row
+        return '<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">' +
+            '<tr>' +
+            '<td>Mô tả khoa:</td>' +
+            '<td>' + d.FACULTYDESCRIPTION + '</td>' +
+            '</tr>' +
+            '</table>';
+    }
+
+    //Lấy dữ liệu và vẽ bảng
+    function BindDataTable(key) {
+
+        table = $('#faculty-tbl').DataTable({
+            "searching": false,
+            "ajax": {
+                "url": '/faculty/GetDataByKey/',
+                "type": 'POST',
+                "data": { key: key }
+            },
+            "columns": [
+                {
+                    "className": 'details-control',
+                    "orderable": false,
+                    "data": null,
+                    "defaultContent": ''
+                },
+                { "data": "CODEVIEW" },
+                { "data": "FACULTYNAME" },
+                {
+                    "data": "CODE",
+                    "render": function (EmployeeId, type, full, meta) {
+
+                        return '<a href="#" onclick="AddEditEmployee(' + EmployeeId + ')" title="' + EmployeeId + '"><i class="glyphicon glyphicon-pencil"></i></a>'
+                    }
+                }
+            ]
+
+            //"bServerSide": false,
+            //"sAjaxSource": "/faculty/GetDataByKey/",
+            //"fnServerData": function (sSource, aoData, fnCallback) {
+
+            //    aoData.push({ "name": "key", "value": key });
+
+            //    $.ajax({
+
+            //        type: "POST",
+            //        data: aoData,
+            //        url: sSource,
+            //        success: fnCallback
+            //    })
+
+            //},
+            //"aoColumns": [
+            //    {
+            //        "className": 'details-control',
+            //        "orderable": false,
+            //        "data": null,
+            //        "defaultContent": ''
+            //    },
+            //    { "mData": "CODEVIEW" },
+            //    { "mData": "FACULTYNAME" },
+            //    {
+            //        "mData": "CODE",
+            //        "render": function (EmployeeId, type, full, meta) {
+
+            //            return '<a href="#" onclick="AddEditEmployee(' + EmployeeId + ')"><i class="glyphicon glyphicon-pencil"></i></a>'
+            //        }
+            //    },
+
+
+            //]
+
+
+        });
+
+    }
+
+    //Hiện child row
+    $(function () {
+        $('#faculty-tbl tbody').on('click', 'td.details-control', function () {
+            var tr = $(this).closest('tr');
+            var row = table.row(tr);
+
+            if (row.child.isShown()) {
+                // This row is already open - close it
+                row.child.hide();
+                tr.removeClass('shown');
+            }
+            else {
+                // Open this row
+                row.child(format(row.data())).show();
+                tr.addClass('shown');
+            }
+        });
+    });
+
+    //Hiển thị kết quả tìm kiếm
+    $(function () {
+        $('#search-input').keyup(function () {
+            var key = $('#search-input').val();
+            //var url = "/faculty/GetDataByKey/"
+
+            //$.post(url, { key: key }, function (result) {
+            //    alert(result);
+            //});
+
+            var table;
+
+            if ($.fn.DataTable.isDataTable("#faculty-tbl")) {
+
+                $('#faculty-tbl').DataTable().clear();
+                $('#faculty-tbl').DataTable().destroy();
+                BindDataTable(key);
+
+            }
+            else {
+
+                BindDataTable(key);
+
+            }
+        });
+    });
+
+    //Hiện form mới khoa
+    $(function () {
+        $('#create-btn').on('click', function () {
+            $('.create').show();
+        });
+    });
+
+    //Hủy form thêm mới khoa
+    $(function () {
+        $('#cancel-faculty').on('click', function () {
+            $('.create').hide();
+        });
+    });
+
+</script>
+
+<input type="text" name="search-input" id="search-input" />
+
+<button id="search-btn">Tìm kiếm</button>
+
+<button id="create-btn" style="float: right">Thêm mới</button>
+
+<table id="faculty-tbl" class="display">
+    <thead>
+        <tr>
+            <th></th>
+            <th>Mã khoa</th>
+            <th>Tên khoa</th>
+            <th></th>
+        </tr>
+    </thead>
+
+    <tbody></tbody>
+</table>
+
+<div class="create ">
+    <div class="create-form">
+        <h2>Thêm mới</h2>
+
+        <table>
+            <tr>
+                <td>Mã khoa</td>
+                <td><input type="text" /></td>
+            </tr>
+
+            <tr>
+                <td>Tên khoa</td>
+                <td><input type="text" /></td>
+            </tr>
+
+            <tr>
+                <td>Mô tả khoa</td>
+                <td><input type="text" /></td>
+            </tr>
+        </table>
+
+        <button id="confirm-faculty">Xác nhận</button>
+        <button id="cancel-faculty">Hủy</button>
+    </div>
+</div>
+
