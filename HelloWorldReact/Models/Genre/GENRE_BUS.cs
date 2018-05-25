@@ -33,7 +33,7 @@ namespace HelloWorldReact.Models.GENRE
         public List<GENRE_OBJ> GetGenreList(string name, string facultycode)
         {
             List<GENRE_OBJ> lidata = new List<GENRE_OBJ>();
-            string sql = "GetGenreList '" + name + "','" + facultycode + "'";
+            string sql = "GetGenreList N'" + name + "','" + facultycode + "'";
             SqlCommand cm = new SqlCommand();
             cm.CommandText = sql;
             cm.CommandType = CommandType.Text;

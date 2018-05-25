@@ -28,6 +28,14 @@ namespace HelloWorldReact.Controllers
             return Json(new { data = model });
         }
 
+        [HttpPost]
+        public JsonResult GetDataToSelect(string key)
+        {
+            var obj = new FACULTY_BUS();
+            var model = obj.GetFacultyList(key);
+            return Json(model);
+        }
+
         /// <summary>
         /// Hiển thị dữ liệu theo mã
         /// </summary>
